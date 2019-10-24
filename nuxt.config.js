@@ -51,5 +51,11 @@ export default {
     */
     extend (config, ctx) {
     }
+  },
+  router: {
+    // mode: 'hash',
+    mode: 'history',
+    base: '/'
   }
+
 }
