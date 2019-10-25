@@ -20,9 +20,11 @@
 </script>
 <style lang="scss">
   .el-row{
+    padding: .5rem 0;
     background: #409EFF;
     h1 {
       color: #fff;
+      font-size: 1.25rem;
       text-align: center
     }
 
