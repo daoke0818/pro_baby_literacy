@@ -4,11 +4,7 @@
       <my-header/>
     </el-header>
     <el-main>
-      <form>
-          <el-checkbox-group v-model="type" @change="print">
-            <el-checkbox-button v-for="item in types" :key="item" :label="item"></el-checkbox-button>
-          </el-checkbox-group>
-      </form>
+      <main-box/>
     </el-main>
     <el-footer>
     </el-footer>
@@ -16,31 +12,36 @@
 </template>
 
 <script>
-    import MyHeader from "./MyHeader";
+  import Vue from "vue";
+    import MyHeader from "../components/MyHeader";
+    import MainBox from "../components/MainBox";
+    import common from "../assets/js/common";
 
     export default {
-  components: {
-      MyHeader
-  },
-        data(){
-      return{
-          type:[],
-          types:['数字','大写字母','小写字母','符号']
-            }
+        components: {
+            MainBox,
+            MyHeader
         },
-        methods:{
-      print(){
-          console.log(this.type)
-      }
+        data() {
+            return {}
+
+        },
+        methods: {},
+        mounted(){
         }
-}
+    }
 </script>
 
 <style lang="scss">
-  body{
+  @import "../assets/css/common.css";
+
+  body {
     background: lightskyblue;
-  }
-  .el-header{
-    padding: 0;
+
+    .el-header {
+      height: auto;
+      padding: 0;
+    }
+
   }
 </style>

@@ -10,7 +10,10 @@
                 阿洛识字
             </h1>
         </el-col>
-        <el-col :span="4"></el-col>
+        <el-col :span="4">
+          <div><output id="answer">g</output></div>
+
+        </el-col>
     </el-row>
 </template>
 <script>
