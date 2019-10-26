@@ -16,21 +16,16 @@
     <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div class="box-wrap d-flex flex-wrap w2h2">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        <div  v-for="(item,index) in rdmStr" :key="index">{{item}}</div>
       </div>
-      <img src="" id="good" class="position-absolute w-50" alt="thumb">
+      <img :src="thumbAttr" v-if="isGoodHide" id="good" class="position-absolute w-50" alt="thumb">
     </section>
     <p>第
       <output id="counter" class="font-weight-bold"></output>
       道题
     </p>
     <p id="tip"></p>
-    <audio id="pippaPig" src="static/music/PeppaPig.m4a" controls style="display: none"></audio>
+    <audio id="pippaPig" src="../static/music/PeppaPig.m4a" controls style="display: none"></audio>
   </div>
 
 </template>
@@ -41,17 +36,96 @@
         methods:{
             print(){
                 console.log(this.typeRange,this.typeDisplay)
-            }
+            },
+            shuffle() {
+                let picSrc = (Math.random() < .67) ? this.okPic.empty : this.okPic.rdmPics[Math.floor(Math.random() * this.okPic.rdmPics.length)];
+                switch (this.counter) {
+                    case 5:
+                        picSrc = this.okPic.level1;
+                        break;
+                    case 10:
+                        picSrc = this.okPic.level2;
+                        break;
+                    case this.limitNum:
+                        picSrc = this.okPic.levelLast;
+                        break;
+                }
+                const thumbAttr = 'static/img/' + picSrc;
+                this.isGoodHide = true;
+                this.timer = null;
+                this.boxActive = -1;
+                switch (this.type) {
+                    case "number":
+                        this.result = this.numbers.rdm();
+                        break;
+                    case 'letter':
+                        this.result = this.upperLetters.rdm();
+                        break;
+                    case 'lowerCaseLetter':
+                        this.result = this.lowerLetters.rdm();
+                        break;
+                    case 'operateChar':
+                        this.result = this.passOperateChar.rdm();
+                        break;
+                    case 'letterOrNum':
+                        this.result = (this.numbers + this.upperLetters + this.lowerLetters).rdm();
+                }
+                this.resultIndex = Math.floor(Math.random() * this.blockNum);
+                let tempArr = [];
+                // 生成随机字符串以填充方格
+                while (true) {
+                    if (this.type === 'operateChar') {
+                        tempArr = this.operateChar.split('').disruptOrder().splice(1 - this.blockNum);
+                    } else if (this.type === 'lowerCaseLetter') {
+                        tempArr = Math.random().toString(36).substr(1 - this.blockNum).split('');
+                    } else if (['letter','number','letterOrNum'].includes(this.type)) {
+                        tempArr = Math.random().toString(36).toUpperCase().substr(1 - this.blockNum).split('');
+                    }
+                    // 填充的字符不包含当前的答案则退出循环，即不重复
+                    // console.log(rdmStr)
+                    if (!tempArr.includes(this.result)) {
+                        break;
+                    }
+                }
+                //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
+                // 所以this.resultIndex在0~n的位置对应n个rdmStr字符的n+1个空隙中
+                this.rdmStr = tempArr.splice(this.resultIndex, 0, this.result + '');
+                // $('#answer').text(this.result);
+                // $('#counter').text(this.counter);
+            },
         },
         data(){
             return{
+                limitNum: 15,
+                blockNum: 4,
+                isGoodHide:true,
+                $good:document.querySelectorAll('#good'),
+                thumbAttr: '',
+                boxActive:-1,
                 typeRange:[],
                 typeRanges:['数字','大写字母','小写字母','符号'],
                 typeDisplay:[],
-                typeDisplays:['2x2','3x2']
+                typeDisplays:['2x2','3x2'],
+                okPic: {
+                    rdmPics: ['p_pass01_thumb.jpg', 'p_pass02_thumb.jpg', 'p_pass03_thumb_face.jpg', 'p_pass04_peiqi.jpg', 'p_pass05_peiqiAnimation.gif', 'p_pass06_qiaozhi.jpg', 'p_pass08_wolaile.gif'],
+                    empty: '1x1px.png',
+                    level1: 'p_pass09_JSON.jpg',
+                    level2: 'p_pass10_JSON.jpg',
+                    levelLast: 'p_pass07_peiqiAnimation.gif'
+                },
+                numbers: '0123456789',
+                lowerLetters: '',
+                upperLetters: '',
+                operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
+                passOperateChar: '+-×÷><=_，。：\/#*',
+                rdmStr: []
             }
         },
         mounted() {
+            this.shuffle();
+            document.querySelectorAll('.box-wrap>div').forEach(function (item,index) {
+                item.innerHTML = index+''
+            })
         }
     }
 </script>
@@ -62,3 +136,4 @@
   }
 
 </style>
+

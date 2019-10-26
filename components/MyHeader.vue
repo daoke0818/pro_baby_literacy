@@ -2,7 +2,7 @@
     <el-row>
         <el-col :span="4">
           <a href="http://e-art.top">
-            <img src="../assets/img/logo_v0.1_w.png" alt="logo">
+            <img src="../static/img/logo_v0.1_w.png" alt="logo">
           </a>
         </el-col>
         <el-col :span="16">
