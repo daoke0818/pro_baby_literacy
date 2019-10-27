@@ -35,10 +35,11 @@
         name: "MainBox",
         methods:{
             print(){
+                this.shuffle();
                 console.log(this.typeRange,this.typeDisplay)
             },
             shuffle() {
-                let picSrc = (Math.random() < .67) ? this.okPic.empty : this.okPic.rdmPics[Math.floor(Math.random() * this.okPic.rdmPics.length)];
+                let picSrc = (Math.random() < .67) ? this.okPic.empty : this.okPic.rdmPics.rdm();
                 switch (this.counter) {
                     case 5:
                         picSrc = this.okPic.level1;
@@ -52,44 +53,54 @@
                 }
                 const thumbAttr = 'static/img/' + picSrc;
                 this.isGoodHide = true;
-                this.timer = null;
+                // this.timer = null;
                 this.boxActive = -1;
-                switch (this.type) {
-                    case "number":
-                        this.result = this.numbers.rdm();
-                        break;
-                    case 'letter':
-                        this.result = this.upperLetters.rdm();
-                        break;
-                    case 'lowerCaseLetter':
-                        this.result = this.lowerLetters.rdm();
-                        break;
-                    case 'operateChar':
-                        this.result = this.passOperateChar.rdm();
-                        break;
-                    case 'letterOrNum':
-                        this.result = (this.numbers + this.upperLetters + this.lowerLetters).rdm();
-                }
-                this.resultIndex = Math.floor(Math.random() * this.blockNum);
+                let charRange = '';
+                this.typeRange.forEach((item)=>{
+                    switch (item) {
+                        case "数字":
+                            charRange += this.numbers.rdm();
+                            break;
+                        case '大写字母':
+                            charRange += this.upperLetters.rdm();
+                            break;
+                        case '小写字母':
+                            charRange += this.lowerLetters.rdm();
+                            break;
+                        case '符号':
+                            charRange += this.passOperateChar.rdm();
+                            break;
+                        // case 'letterOrNum':
+                        //     this.result = (this.numbers + this.upperLetters + this.lowerLetters).rdm();
+                    }
+                });
+
+                console.log(this.result)
+                this.result = charRange.rdm();
+                this.resultIndex = this.blockNum.rdm();
                 let tempArr = [];
                 // 生成随机字符串以填充方格
-                while (true) {
-                    if (this.type === 'operateChar') {
+                let n=0;
+                while (n++<10) {
+                    tempArr = charRange.rdm(this.blockNum-1);
+                   /* if (this.typeRange[0] === '符号') {
                         tempArr = this.operateChar.split('').disruptOrder().splice(1 - this.blockNum);
-                    } else if (this.type === 'lowerCaseLetter') {
+                    } else if (this.typeRange[0] === '小写字母') {
                         tempArr = Math.random().toString(36).substr(1 - this.blockNum).split('');
-                    } else if (['letter','number','letterOrNum'].includes(this.type)) {
+                    } else if (['大写字母','数字'].includes(this.typeRange[0])) {
                         tempArr = Math.random().toString(36).toUpperCase().substr(1 - this.blockNum).split('');
-                    }
+                    }*/
                     // 填充的字符不包含当前的答案则退出循环，即不重复
-                    // console.log(rdmStr)
-                    if (!tempArr.includes(this.result)) {
+                    if (!tempArr.includes(this.result+'')) {
                         break;
                     }
                 }
                 //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
                 // 所以this.resultIndex在0~n的位置对应n个rdmStr字符的n+1个空隙中
-                this.rdmStr = tempArr.splice(this.resultIndex, 0, this.result + '');
+                // tempArr = tempArr.split('').splice(this.resultIndex, 0, this.result + '');
+                this.rdmStr = tempArr;
+                console.log('tempArr',tempArr,'resultIndex',this.resultIndex, this.result,this.rdmStr)
+
                 // $('#answer').text(this.result);
                 // $('#counter').text(this.counter);
             },
@@ -106,6 +117,7 @@
                 typeRanges:['数字','大写字母','小写字母','符号'],
                 typeDisplay:[],
                 typeDisplays:['2x2','3x2'],
+                result:'',
                 okPic: {
                     rdmPics: ['p_pass01_thumb.jpg', 'p_pass02_thumb.jpg', 'p_pass03_thumb_face.jpg', 'p_pass04_peiqi.jpg', 'p_pass05_peiqiAnimation.gif', 'p_pass06_qiaozhi.jpg', 'p_pass08_wolaile.gif'],
                     empty: '1x1px.png',
