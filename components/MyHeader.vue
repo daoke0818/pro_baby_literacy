@@ -11,14 +11,28 @@
             </h1>
         </el-col>
         <el-col :span="4">
-          <div><output id="answer">g</output></div>
+          <div><output id="answer" >{{result}}</output></div>
 
         </el-col>
     </el-row>
 </template>
 <script>
+  import Bus from '../middleware/BusEvent'
     export default {
-        name: 'my-header'
+        name: 'my-header',
+        data(){
+            return{
+                result:''
+            }
+        },
+        beforeCreate(){
+            Bus.$on('setResult',(result)=>{
+                this.result = result
+            })
+        },
+        beforeDestroy(){
+            Bus.$off('setResult')
+        }
     }
 </script>
 <style lang="scss">

@@ -30,7 +30,7 @@ const rdm = function (n) {
   if(n){
     return temp.disruptOrder().slice(0, n)
   }else{
-    return temp[Math.random() * (this.length) | 0]
+    return temp[Math.random() * temp.length | 0]
   }
 
 };
