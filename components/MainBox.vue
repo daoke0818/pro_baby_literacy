@@ -16,7 +16,7 @@
     <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
-        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)">{{item}}</div>
+        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)" :class="isChecked && index===+resultIndex?'correct':'' ">{{item}}</div>
       </div>
       <img :src="thumbAttr" v-if="isGoodHide" id="good" class="position-absolute w-50" alt="thumb">
     </section>
@@ -26,7 +26,6 @@
     </p>
     <p id="tip"></p>
     <audio id="pippaPig" src="../static/music/PeppaPig.m4a" controls style="display: none"></audio>
-    <img :src="thumbAttr" alt="">
   </div>
 </template>
 
@@ -67,9 +66,10 @@
                         picSrc = this.okPic.levelLast;
                         break;
                 }
-                // this.thumbAttr = '/_nuxt/static/img/' + picSrc;
-                this.thumbAttr = '/_nuxt/static/img/p_pass01_thumb.png';
-                this.isGoodHide = true;
+                // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
+                this.thumbAttr = 'img/' + picSrc;
+                this.isGoodHide = false;
+                this.isChecked = false;
                 // this.timer = null;
                 this.boxActive = -1;
                 let charRange = '';
@@ -87,8 +87,6 @@
                         case '符号':
                             charRange += this.passOperateChar;
                             break;
-                        // case 'letterOrNum':
-                        //     this.result = (this.numbers + this.upperLetters + this.lowerLetters).rdm();
                     }
                 });
 
@@ -117,8 +115,8 @@
                 Bus.$emit('setResult', this.result)
             },
             clickBlock(index) {
-                /*const next = () => {
-                    this.$blocks.css('pointer-events', 'initial');
+                const next = () => {
+                    /*this.$blocks.css('pointer-events', 'initial');
                     this.$sound_next.get(0).pause();
                     this.$sound_next.get(0).play();
                     if (++this.counter > this.limitNum) {
@@ -126,21 +124,21 @@
                         that.$good.addClass('w-auto');
                         $("#pippaPig").slideDown(600).get(0).play();
                         return;
-                    }
+                    }*/
                     this.shuffle();
-                };*/
+                };
                 const checkRight = () => {
                     setTimeout(() => {
-                        // this.$good.style.display = 'block'
+                        this.isGoodHide = true
                     }, 400);
-
+                    this.isChecked = true
                     /*
                                         this.$blocks.eq(this.resultIndex).addClass('correct');
                                         this.$sound_correct.get(0).pause();
                                         this.$sound_correct.get(0).play();
+*/
+                                        this.timer = setTimeout(next, this.$good.src.includes('1x1px.png') ? 1000 : 2500);
 
-                                        this.timer = setTimeout(next, that.$good.attr("src").includes('1x1px.png') ? 1000 : 2500);
-                    */
                 };
                 if (index === +this.resultIndex) {
                     console.log(index, this.$good)
@@ -165,6 +163,7 @@
         },
         data() {
             return {
+                isChecked:false,
                 limitNum: 15,
                 blockNum: 4,
                 isGoodHide: true,
