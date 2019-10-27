@@ -1,8 +1,8 @@
 <template>
   <div>
     <form>
-      <label>请选择答案范围</label>
-      <el-checkbox-group v-model="typeRange" @change="changeTypeRange" size="small">
+      <label>请选择练习范围</label>
+      <el-checkbox-group v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
         <el-checkbox-button v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
       </el-checkbox-group>
       <label>请选择显示模式</label>
@@ -16,7 +16,7 @@
     <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
-        <div v-for="(item,index) in fillStr" :key="index">{{item}}</div>
+        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)">{{item}}</div>
       </div>
       <img :src="thumbAttr" v-if="isGoodHide" id="good" class="position-absolute w-50" alt="thumb">
     </section>
@@ -26,8 +26,8 @@
     </p>
     <p id="tip"></p>
     <audio id="pippaPig" src="../static/music/PeppaPig.m4a" controls style="display: none"></audio>
+    <img :src="thumbAttr" alt="">
   </div>
-
 </template>
 
 <script>
@@ -46,10 +46,10 @@
             changeTypeRange() {
                 this.shuffle();
             },
-            changeDisplayMode(){
-                if(this.displayMode==='2x2'){
+            changeDisplayMode() {
+                if (this.displayMode === '2x2') {
                     this.blockNum = 4
-                }else if(this.displayMode==='3x2'){
+                } else if (this.displayMode === '3x2') {
                     this.blockNum = 6
                 }
                 this.shuffle();
@@ -67,7 +67,8 @@
                         picSrc = this.okPic.levelLast;
                         break;
                 }
-                const thumbAttr = 'static/img/' + picSrc;
+                // this.thumbAttr = '/_nuxt/static/img/' + picSrc;
+                this.thumbAttr = '/_nuxt/static/img/p_pass01_thumb.png';
                 this.isGoodHide = true;
                 // this.timer = null;
                 this.boxActive = -1;
@@ -92,7 +93,7 @@
                 });
 
                 this.result = charRange.rdm();
-                this.resultIndex = (this.blockNum).rdm();
+                this.resultIndex = this.blockNum.rdm();
                 let tempArr = '';
                 // 生成随机字符串以填充方格
                 let n = 0;
@@ -113,20 +114,66 @@
                     tempArr,
                     fillStr: this.fillStr
                 });
-                Bus.$emit('setResult',this.result)
+                Bus.$emit('setResult', this.result)
             },
+            clickBlock(index) {
+                /*const next = () => {
+                    this.$blocks.css('pointer-events', 'initial');
+                    this.$sound_next.get(0).pause();
+                    this.$sound_next.get(0).play();
+                    if (++this.counter > this.limitNum) {
+                        alert('宝宝，你已经学了' + this.limitNum + '道题了，听首歌休息一下吧！');
+                        that.$good.addClass('w-auto');
+                        $("#pippaPig").slideDown(600).get(0).play();
+                        return;
+                    }
+                    this.shuffle();
+                };*/
+                const checkRight = () => {
+                    setTimeout(() => {
+                        // this.$good.style.display = 'block'
+                    }, 400);
+
+                    /*
+                                        this.$blocks.eq(this.resultIndex).addClass('correct');
+                                        this.$sound_correct.get(0).pause();
+                                        this.$sound_correct.get(0).play();
+
+                                        this.timer = setTimeout(next, that.$good.attr("src").includes('1x1px.png') ? 1000 : 2500);
+                    */
+                };
+                if (index === +this.resultIndex) {
+                    console.log(index, this.$good)
+                    checkRight()
+                }
+                /*this.$blocks.click(function () {
+                    const text = $(this).text();
+                    if (!that.timer && text === that.result) {
+                        checkRight()
+                    } else {
+                        // $(this).addClass('error')
+                    }
+                });
+
+                $('body').keyup(function (e) {
+                    if (!that.timer && e.key === that.result) {
+                        checkRight()
+                    }
+                });*/
+
+            }
         },
         data() {
             return {
                 limitNum: 15,
                 blockNum: 4,
                 isGoodHide: true,
-                $good: document.querySelectorAll('#good'),
+                $good: {},
                 thumbAttr: '',
                 boxActive: -1,
-                typeRange: [],
+                typeRange: ['数字', '大写字母', '小写字母', '符号'],
                 typeRanges: ['数字', '大写字母', '小写字母', '符号'],
-                displayMode: [],
+                displayMode: '2x2',
                 displayModes: ['2x2', '3x2'],
                 result: '',
                 okPic: {
@@ -147,13 +194,13 @@
         created() {
             this.lowerLetters = this.generateLetters().toLocaleLowerCase();
             this.upperLetters = this.generateLetters();
-            this.shuffle();
-
         },
         mounted() {
-            document.querySelectorAll('.box-wrap>div').forEach(function (item, index) {
+            /*document.querySelectorAll('.box-wrap>div').forEach(function (item, index) {
                 item.innerHTML = index
-            })
+            });*/
+            this.$good = document.querySelector('#good');
+            this.shuffle();
         }
     }
 </script>
