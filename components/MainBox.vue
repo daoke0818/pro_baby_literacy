@@ -18,14 +18,16 @@
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
         <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)" :class="isChecked && index===+resultIndex?'correct':'' ">{{item}}</div>
       </div>
-      <img :src="thumbAttr" v-if="isGoodHide" id="good" class="position-absolute w-50" alt="thumb">
+      <img :src="thumbAttr" v-if="isGoodHide" id="good" :class="['position-absolute', goodWidth]" alt="thumb">
     </section>
     <p>第
-      <output id="counter" class="font-weight-bold"></output>
+      <output id="counter" class="font-weight-bold">{{counter}}</output>
       道题
     </p>
     <p id="tip"></p>
-    <audio id="pippaPig" src="../static/music/PeppaPig.m4a" controls style="display: none"></audio>
+    <audio id="sound_correct" hidden="" src="/sound/tada.wav"></audio>
+    <audio id="sound_next" hidden="" src="/sound/next.wav"></audio>
+    <audio id="pippaPig" autoplay src="/music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
   </div>
 </template>
 
@@ -91,7 +93,8 @@
                 });
 
                 this.result = charRange.rdm();
-                this.resultIndex = this.blockNum.rdm();
+                // 如果2x2则只有3个填充块和4个可插入答案的位置
+                this.resultIndex = (this.blockNum-1).rdm();
                 let tempArr = '';
                 // 生成随机字符串以填充方格
                 let n = 0;
@@ -116,44 +119,29 @@
             },
             clickBlock(index) {
                 const next = () => {
-                    /*this.$blocks.css('pointer-events', 'initial');
-                    this.$sound_next.get(0).pause();
-                    this.$sound_next.get(0).play();
-                    if (++this.counter > this.limitNum) {
-                        alert('宝宝，你已经学了' + this.limitNum + '道题了，听首歌休息一下吧！');
-                        that.$good.addClass('w-auto');
-                        $("#pippaPig").slideDown(600).get(0).play();
-                        return;
-                    }*/
+                    this.$sound_next.pause();
+                    this.$sound_next.play();
+                    if (this.counter++ === this.limitNum) {
+                        alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家里跳泥坑吧！');
+                        this.isEnd = true;
+                        return false;
+                    }
                     this.shuffle();
                 };
                 const checkRight = () => {
                     setTimeout(() => {
                         this.isGoodHide = true
                     }, 400);
-                    this.isChecked = true
-                    /*
-                                        this.$blocks.eq(this.resultIndex).addClass('correct');
-                                        this.$sound_correct.get(0).pause();
-                                        this.$sound_correct.get(0).play();
-*/
-                                        this.timer = setTimeout(next, this.$good.src.includes('1x1px.png') ? 1000 : 2500);
+                    this.isChecked = true;
+                    this.$sound_correct.pause();
+                    this.$sound_correct.play();
+                    this.timer = setTimeout(next, this.thumbAttr.includes('1x1px.png') ? 1000 : 2500);
 
                 };
                 if (index === +this.resultIndex) {
-                    console.log(index, this.$good)
                     checkRight()
                 }
-                /*this.$blocks.click(function () {
-                    const text = $(this).text();
-                    if (!that.timer && text === that.result) {
-                        checkRight()
-                    } else {
-                        // $(this).addClass('error')
-                    }
-                });
-
-                $('body').keyup(function (e) {
+                /* $('body').keyup(function (e) {
                     if (!that.timer && e.key === that.result) {
                         checkRight()
                     }
@@ -168,6 +156,10 @@
                 blockNum: 4,
                 isGoodHide: true,
                 $good: {},
+                $sound_correct: {},
+                $sound_next: {},
+                $pippaPig: {},
+                timer: '',
                 thumbAttr: '',
                 boxActive: -1,
                 typeRange: ['数字', '大写字母', '小写字母', '符号'],
@@ -187,7 +179,10 @@
                 upperLetters: '',
                 operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
                 passOperateChar: '+-×÷><=_，。：\/#*',
-                fillStr: []
+                fillStr: [],
+                counter:1,
+                goodWidth:'w-50',
+                isEnd:false
             }
         },
         created() {
@@ -195,11 +190,14 @@
             this.upperLetters = this.generateLetters();
         },
         mounted() {
-            /*document.querySelectorAll('.box-wrap>div').forEach(function (item, index) {
-                item.innerHTML = index
-            });*/
             this.$good = document.querySelector('#good');
+            this.$sound_correct = document.querySelector('#sound_correct');
+            this.$sound_next = document.querySelector('#sound_next');
+            this.$pippaPig = document.querySelector('#pippaPig');
             this.shuffle();
+        },
+        updated(){
+            this.goodWidth = [5,10,15].includes(this.counter) || (this.isEnd)?'w-100':'w-50'
         }
     }
 </script>
@@ -207,6 +205,44 @@
 <style scoped>
   .el-checkbox-group, .el-radio-group {
     margin: .25rem 0 .5rem;
+  }
+  .box-wrap {
+    text-align: center;
+    box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.33);
+  }
+  .box-wrap > div {
+    position: relative;
+    width: calc(100%/3);
+    height: 6rem;
+    line-height: 5rem;
+    font-size: 4rem;
+    font-weight: bold;
+    border: .125rem solid gray;
+    background: lightgray;
+    box-shadow: -0.25rem -0.25rem 0.25rem rgba(0,0,0,.88) inset;
+    cursor: pointer;
+  }
+  .box-wrap.w2h2 > div{
+    width: calc(100%/2);
+  }
+  .box-wrap.w2h2 > div:nth-of-type(4) ~ div{
+    display: none;
+  }
+  .box-wrap > div.correct {
+    box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.9) inset;
+    color: #fff;
+    background: limegreen;
+    pointer-events: none;
+  }
+
+  .box-wrap > div.error {
+    background: indianred;
+  }
+
+  .box-wrap ~ img {
+    top: 57%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
 </style>
