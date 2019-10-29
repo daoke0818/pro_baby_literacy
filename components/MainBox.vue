@@ -24,7 +24,8 @@
       <output id="counter" class="font-weight-bold">{{counter}}</output>
       道题
     </p>
-    <p id="tip"></p>
+    <hr class="my-3">
+    <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>共{{this.passOperateChar.length}}个</p>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
     <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
     <audio id="pippaPig" autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
@@ -122,7 +123,7 @@
                     this.$sound_next.pause();
                     this.$sound_next.play();
                     if (this.counter++ === this.limitNum) {
-                        alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家里跳泥坑吧！');
+                        alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
                         this.isEnd = true;
                         return false;
                     }
@@ -178,7 +179,7 @@
                 lowerLetters: '',
                 upperLetters: '',
                 operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
-                passOperateChar: '+-×÷><=_，。：\/#*',
+                passOperateChar: '+-×÷><=_，。：\/#*@$&|%',
                 fillStr: [],
                 counter:1,
                 goodWidth:'w-50',
@@ -203,9 +204,6 @@
 </script>
 
 <style>
-  /*.testScope .el-checkbox-button__inner{
-    background: greenyellow;
-  }*/
   .el-checkbox-group, .el-radio-group {
     margin: .25rem 0 .5rem;
   }
