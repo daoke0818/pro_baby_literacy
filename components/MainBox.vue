@@ -2,18 +2,18 @@
   <div>
     <form>
       <label>请选择练习范围</label>
-      <el-checkbox-group v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
+      <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
         <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
       </el-checkbox-group>
       <label>请选择显示模式</label>
       <div>
-        <el-radio-group v-model="displayMode" @change="changeDisplayMode" size="small">
+        <el-radio-group :style="{pointerEvents: isEnd?'none':''}" v-model="displayMode" @change="changeDisplayMode" size="small">
           <el-radio-button v-for="item in displayModes" :key="item" :label="item"></el-radio-button>
         </el-radio-group>
       </div>
     </form>
     <hr class="my-3">
-    <section class="text-center mb-2 position-relative">
+    <section  :style="{pointerEvents: isEnd?'none':''}" class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
         <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)" :class="isChecked && index===+resultIndex?'correct':'' ">{{item}}</div>
@@ -28,7 +28,7 @@
     <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>共{{this.passOperateChar.length}}个</p>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
     <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
-    <audio id="pippaPig" autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
+    <audio id="pippaPig" preload autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
   </div>
 </template>
 
@@ -120,14 +120,15 @@
             },
             clickBlock(index) {
                 const next = () => {
-                    this.$sound_next.pause();
-                    this.$sound_next.play();
-                    if (this.counter++ === this.limitNum) {
+                    if (this.counter++ >= this.limitNum) {
                         alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
                         this.isEnd = true;
                         return false;
+                    }else{
+                        this.$sound_next.pause();
+                        this.$sound_next.play();
+                        this.shuffle();
                     }
-                    this.shuffle();
                 };
                 const checkRight = () => {
                     setTimeout(() => {
@@ -159,7 +160,7 @@
                 $good: {},
                 $sound_correct: {},
                 $sound_next: {},
-                $pippaPig: {},
+                // $pippaPig: {},
                 timer: '',
                 thumbAttr: '',
                 boxActive: -1,
@@ -194,11 +195,11 @@
             this.$good = document.querySelector('#good');
             this.$sound_correct = document.querySelector('#sound_correct');
             this.$sound_next = document.querySelector('#sound_next');
-            this.$pippaPig = document.querySelector('#pippaPig');
+            // this.$pippaPig = document.querySelector('#pippaPig');
             this.shuffle();
         },
         updated(){
-            this.goodWidth = [5,10,15].includes(this.counter) || (this.isEnd)?'w-100':'w-50'
+            this.goodWidth = [5,10,15].includes(this.counter) || (this.isEnd?'w-100':'w-50')
         }
     }
 </script>
