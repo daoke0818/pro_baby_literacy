@@ -3,7 +3,7 @@
     <form>
       <label>请选择练习范围</label>
       <el-checkbox-group v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
-        <el-checkbox-button v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
+        <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
       </el-checkbox-group>
       <label>请选择显示模式</label>
       <div>
@@ -25,9 +25,9 @@
       道题
     </p>
     <p id="tip"></p>
-    <audio id="sound_correct" hidden="" src="/sound/tada.wav"></audio>
-    <audio id="sound_next" hidden="" src="/sound/next.wav"></audio>
-    <audio id="pippaPig" autoplay src="/music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
+    <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
+    <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
+    <audio id="pippaPig" autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
   </div>
 </template>
 
@@ -202,9 +202,17 @@
     }
 </script>
 
-<style scoped>
+<style>
+  /*.testScope .el-checkbox-button__inner{
+    background: greenyellow;
+  }*/
   .el-checkbox-group, .el-radio-group {
     margin: .25rem 0 .5rem;
+  }
+  .el-checkbox-button.is-disabled .el-checkbox-button__inner{
+    color:#000;
+    border-color: var(--c-brand)!important;
+    background: var(--c-brand)!important;
   }
   .box-wrap {
     text-align: center;

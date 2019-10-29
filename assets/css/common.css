@@ -1,3 +1,11 @@
+:root{
+  --c-brand:#409EFF;
+  --c-success:#67C23A;
+  --c-warning:#E6A23C;
+  --c-danger:#F56C6C;
+  --c-info:#909399;
+}
+
 body {
   background-color: skyblue;
 }
