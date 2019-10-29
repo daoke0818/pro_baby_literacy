@@ -13,13 +13,14 @@
       </div>
     </form>
     <hr class="my-3">
-    <section  :style="{pointerEvents: isEnd?'none':''}" class="text-center mb-2 position-relative">
+    <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
         <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)" :class="isChecked && index===+resultIndex?'correct':'' ">{{item}}</div>
       </div>
       <img :src="thumbAttr" v-if="isGoodHide" id="good" :class="['position-absolute', goodWidth]" alt="thumb">
     </section>
+    <audio id="pippaPig" preload autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
     <p>第
       <output id="counter" class="font-weight-bold">{{counter}}</output>
       道题
@@ -28,7 +29,6 @@
     <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>共{{this.passOperateChar.length}}个</p>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
     <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
-    <audio id="pippaPig" preload autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
   </div>
 </template>
 
@@ -199,7 +199,7 @@
             this.shuffle();
         },
         updated(){
-            this.goodWidth = [5,10,15].includes(this.counter) || (this.isEnd?'w-100':'w-50')
+            this.goodWidth = [5,10,15].includes(this.counter) || this.isEnd ? 'w-100' : 'w-50'
         }
     }
 </script>
