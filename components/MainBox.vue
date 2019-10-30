@@ -21,10 +21,12 @@
       <img :src="thumbAttr" v-if="isGoodHide" id="good" :class="['position-absolute', goodWidth]" alt="thumb">
     </section>
     <audio id="pippaPig" preload autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
-    <p>第
+    <MyProgress :total="limitNum" :now="counter"/>
+    <p v-if="counter<=limitNum">第
       <output id="counter" class="font-weight-bold">{{counter}}</output>
       道题
     </p>
+    <p v-else>结束</p>
     <hr class="my-3">
     <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>共{{this.passOperateChar.length}}个</p>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
@@ -34,6 +36,7 @@
 
 <script>
     import Bus from "../middleware/BusEvent";
+    import MyProgress from '../components/Progress'
 
     export default {
         name: "MainBox",
@@ -120,7 +123,7 @@
             },
             clickBlock(index) {
                 const next = () => {
-                    if (this.counter++ >= this.limitNum) {
+                    if (++this.counter > this.limitNum) {
                         alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
                         this.isEnd = true;
                         return false;
@@ -160,7 +163,6 @@
                 $good: {},
                 $sound_correct: {},
                 $sound_next: {},
-                // $pippaPig: {},
                 timer: '',
                 thumbAttr: '',
                 boxActive: -1,
@@ -200,6 +202,9 @@
         },
         updated(){
             this.goodWidth = [5,10,15].includes(this.counter) || this.isEnd ? 'w-100' : 'w-50'
+        },
+        components:{
+            MyProgress
         }
     }
 </script>
