@@ -172,7 +172,7 @@
                 displayModes: ['2x2', '3x2'],
                 result: '',
                 okPic: {
-                    rdmPics: ['p_pass01_thumb.jpg', 'p_pass02_thumb.jpg', 'p_pass03_thumb_face.jpg', 'p_pass04_peiqi.jpg', 'p_pass05_peiqiAnimation.gif', 'p_pass06_qiaozhi.jpg', 'p_pass08_wolaile.gif'],
+                    rdmPics: ['p_pass01_thumb.jpg', 'p_pass02_thumb.jpg', 'p_pass03_thumb_face.jpg', 'p_pass04_peiqi.jpg', 'p_pass05_peiqiAnimation.gif', 'p_pass06_qiaozhi.jpg', 'p_pass08_wolaile.gif', 'p_pass11_hen.gif'],
                     empty: '1x1px.png',
                     level1: 'p_pass09_JSON.jpg',
                     level2: 'p_pass10_JSON.jpg',
