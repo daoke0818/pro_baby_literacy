@@ -18,7 +18,8 @@
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
         <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)" :class="isChecked && index===+resultIndex?'correct':'' ">{{item}}</div>
       </div>
-      <img :src="thumbAttr" v-if="isGoodHide" id="good" :class="['position-absolute', goodWidth]" alt="thumb">
+      <ok-pic :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
+
     </section>
     <audio id="pippaPig" preload autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
     <MyProgress :total="limitNum" :now="counter"/>
@@ -37,6 +38,7 @@
 <script>
     import Bus from "../middleware/BusEvent";
     import MyProgress from '../components/Progress'
+    import OkPic from '../components/OkPic'
 
     export default {
         name: "MainBox",
@@ -59,22 +61,13 @@
                 }
                 this.shuffle();
             },
+            setBlankPic(blankPic){
+                this.blankPic = blankPic;
+            },
             shuffle() {
-                let picSrc = (Math.random() < .67) ? this.okPic.empty : this.okPic.rdmPics.rdm();
-                switch (this.counter) {
-                    case 5:
-                        picSrc = this.okPic.level1;
-                        break;
-                    case 10:
-                        picSrc = this.okPic.level2;
-                        break;
-                    case this.limitNum:
-                        picSrc = this.okPic.levelLast;
-                        break;
-                }
+
                 // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
-                this.thumbAttr = 'img/' + picSrc;
-                this.isGoodHide = false;
+                this.showOkPic = false;
                 this.isChecked = false;
                 // this.timer = null;
                 this.boxActive = -1;
@@ -101,8 +94,7 @@
                 this.resultIndex = (this.blockNum-1).rdm();
                 let tempArr = '';
                 // 生成随机字符串以填充方格
-                let n = 0;
-                while (n++ < 10) {
+                while (true) {
                     tempArr = charRange.rdm(this.blockNum - 1);
                     // 填充的字符不包含当前的答案则退出循环，即不重复
                     if (!tempArr.includes(this.result + '')) {
@@ -112,35 +104,37 @@
                 //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
                 // 所以this.resultIndex在0~n的位置对应n个tempArr字符的n+1个空隙中
                 this.fillStr = (tempArr.slice(0, this.resultIndex) + this.result + tempArr.slice(this.resultIndex)).split('');
-                console.log({
+                /*console.log({
                     charRange,
                     result: this.result,
                     resultIndex: this.resultIndex,
                     tempArr,
                     fillStr: this.fillStr
-                });
+                });*/
                 Bus.$emit('setResult', this.result)
             },
+            next() {
+                if (++this.counter > this.limitNum) {
+                    this.counter--;
+                    alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
+                    this.isEnd = true;
+                    return false;
+                } else {
+                    this.$sound_next.pause();
+                    this.$sound_next.play();
+                    this.shuffle();
+                }
+            },
             clickBlock(index) {
-                const next = () => {
-                    if (++this.counter > this.limitNum) {
-                        alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
-                        this.isEnd = true;
-                        return false;
-                    }else{
-                        this.$sound_next.pause();
-                        this.$sound_next.play();
-                        this.shuffle();
-                    }
-                };
                 const checkRight = () => {
                     setTimeout(() => {
-                        this.isGoodHide = true
+                        this.showOkPic = true
                     }, 400);
+                    // this.blankPic = false;
                     this.isChecked = true;
                     this.$sound_correct.pause();
                     this.$sound_correct.play();
-                    this.timer = setTimeout(next, this.thumbAttr.includes('1x1px.png') ? 1000 : 2500);
+                    this.timer = setTimeout(this.next, this.blankPic ? 1000 : 2500);
 
                 };
                 if (index === +this.resultIndex) {
@@ -159,7 +153,8 @@
                 isChecked:false,
                 limitNum: 15,
                 blockNum: 4,
-                isGoodHide: true,
+                showOkPic: false,
+                blankPic:true,
                 $good: {},
                 $sound_correct: {},
                 $sound_next: {},
@@ -171,13 +166,6 @@
                 displayMode: '2x2',
                 displayModes: ['2x2', '3x2'],
                 result: '',
-                okPic: {
-                    rdmPics: ['p_pass01_thumb.jpg', 'p_pass02_thumb.jpg', 'p_pass03_thumb_face.jpg', 'p_pass04_peiqi.jpg', 'p_pass05_peiqiAnimation.gif', 'p_pass06_qiaozhi.jpg', 'p_pass08_wolaile.gif', 'p_pass11_hen.gif'],
-                    empty: '1x1px.png',
-                    level1: 'p_pass09_JSON.jpg',
-                    level2: 'p_pass10_JSON.jpg',
-                    levelLast: 'p_pass07_peiqiAnimation.gif'
-                },
                 numbers: '0123456789',
                 lowerLetters: '',
                 upperLetters: '',
@@ -197,14 +185,14 @@
             this.$good = document.querySelector('#good');
             this.$sound_correct = document.querySelector('#sound_correct');
             this.$sound_next = document.querySelector('#sound_next');
-            // this.$pippaPig = document.querySelector('#pippaPig');
             this.shuffle();
         },
         updated(){
-            this.goodWidth = [5,10,15].includes(this.counter) || this.isEnd ? 'w-100' : 'w-50'
+
         },
         components:{
-            MyProgress
+            MyProgress,
+            OkPic
         }
     }
 </script>
