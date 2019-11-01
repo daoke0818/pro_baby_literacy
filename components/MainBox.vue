@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form>
+    <form >
       <label>请选择练习范围</label>
       <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
         <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
@@ -16,7 +16,7 @@
     <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
-        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)" :class="isChecked && index===+resultIndex?'correct':'' ">{{item}}</div>
+        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)"  :class="isChecked && index === +resultIndex?'correct':'' ">{{item}}</div>
       </div>
       <ok-pic :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
 
@@ -29,7 +29,10 @@
     </p>
     <p class="mt-2" v-else>结束 <el-button type="primary" size="mini" @click="playAgain">再来一局</el-button></p>
     <hr class="my-3">
-    <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>共{{this.passOperateChar.length}}个</p>
+    <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>
+      共{{this.passOperateChar.length}}个<br>
+      <el-alert class="mt-2" title="注意：键盘输入不支持一些中文标点和数学符号，比如“：× ÷ ， 。 ：”" type="warning"></el-alert>
+    </p>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
     <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
   </div>
@@ -42,7 +45,6 @@
 
     export default {
         name: "MainBox",
-        inject:['reload'],
         data() {
             return {
                 isChecked:false,
@@ -61,6 +63,7 @@
                 displayMode: '2x2',
                 displayModes: ['2x2', '3x2'],
                 result: '',
+                resultIndex:0,
                 numbers: '0123456789',
                 lowerLetters: '',
                 upperLetters: '',
@@ -75,7 +78,6 @@
         methods: {
             playAgain(){
                 location.reload()
-                // this.reload()
             },
             generateLetters() { // 大写字母的ASC2码是65~90
                 let arr = '';
@@ -99,7 +101,6 @@
                 this.blankPic = blankPic;
             },
             shuffle() {
-
                 // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
                 this.showOkPic = false;
                 this.isChecked = false;
@@ -150,6 +151,9 @@
                     this.shuffle();
                 }
             },
+            keyDownBlock(e){
+                console.log(e)
+            },
             clickBlock(index) {
                 const checkRight = () => {
                     setTimeout(() => {
@@ -165,17 +169,14 @@
                 if (index === +this.resultIndex) {
                     checkRight()
                 }
-                /* $('body').keyup(function (e) {
-                    if (!that.timer && e.key === that.result) {
-                        checkRight()
-                    }
-                });*/
-
             }
         },
         created() {
             this.lowerLetters = this.generateLetters().toLocaleLowerCase();
             this.upperLetters = this.generateLetters();
+            window.onkeydown = (e) => {
+                this.clickBlock(this.fillStr.indexOf(e.key))
+            }
         },
         mounted() {
             this.$good = document.querySelector('#good');
