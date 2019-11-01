@@ -115,7 +115,6 @@
             },
             next() {
                 if (++this.counter > this.limitNum) {
-                    this.counter--;
                     alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
                     this.isEnd = true;
                     return false;
@@ -231,7 +230,7 @@
   .box-wrap > div.correct {
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.9) inset;
     color: #fff;
-    background: limegreen;
+    background: var(--c-success);
     pointer-events: none;
   }
 

@@ -1,7 +1,5 @@
 <template>
-<!--  <div>-->
-    <img :src="thumbAttr" id="good" :class="['position-absolute', goodWidth]" :key="this.now" alt="thumb">
-<!--  </div>-->
+    <img :src="imgSrc" id="good" :class="['position-absolute', goodWidth]" :key="this.now" alt="thumb">
 </template>
 
 <script>
@@ -16,7 +14,7 @@
                     level2: 'p_pass10_JSON.jpg',
                     levelLast: 'p_pass07_peiqiAnimation.gif'
                 },
-                thumbAttr:'',
+                imgSrc:'',
                 goodWidth:'w-50'
             }
         },
@@ -29,9 +27,12 @@
             }
         },
         methods:{
-            shuffle(){
+            getImgSrc(){
+                if(this.now > this.limitNum){
+                    return
+                }
                 let picSrc = (Math.random() < .67) ? this.okPic.empty : this.okPic.rdmPics.rdm();
-                this.$emit('setBlankPic',picSrc.includes('1x1px.png'))
+                this.$emit('setBlankPic',picSrc.includes('1x1px.png'));
                 switch (this.now) {
                     case 5:
                         picSrc = this.okPic.level1;
@@ -44,17 +45,17 @@
                         break;
                 }
                 // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
-                this.thumbAttr = 'img/' + picSrc;
-                console.log(this.thumbAttr)
-                this.isOkPicHide = false;
+                this.imgSrc = 'img/' + picSrc;
+                console.log(this.imgSrc)
             }
         },
         beforeUpdate() {
-            this.goodWidth = [5,10,this.limitNum].includes(this.now)  ? 'w-100' : 'w-50'
-            this.shuffle()
+            // 最后一道题做完后this.now会自动更新到this.limitNum+1
+            this.goodWidth = [5,10,this.limitNum+1].includes(this.now)  ? 'w-100' : 'w-50';
+            this.getImgSrc()
         },
         created() {
-            this.shuffle()
+            this.getImgSrc()
         }
     }
 </script>
