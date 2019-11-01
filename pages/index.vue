@@ -7,6 +7,7 @@
       <main-box/>
     </el-main>
     <el-footer>
+      <my-footer></my-footer>
     </el-footer>
   </el-container>
 </template>
@@ -16,11 +17,13 @@
     import MyHeader from "../components/MyHeader";
     import MainBox from "../components/MainBox";
     import common from "../assets/js/common";
+    import MyFooter from "../components/MyFooter";
 
     export default {
         components: {
             MainBox,
-            MyHeader
+            MyHeader,
+            MyFooter
         },
         data() {
             return {}
@@ -38,7 +41,7 @@
   body {
     background: lightskyblue;
 
-    .el-header {
+    .el-header,.el-footer {
       height: auto;
       padding: 0;
     }

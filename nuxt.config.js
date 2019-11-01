@@ -12,7 +12,7 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' }
     ]
   },
   /*
@@ -53,6 +53,7 @@ export default {
     extend (config, ctx) {
     }
   },
+  // 用generate打包时使用hash和相对路径./
   router: {
     // mode: 'hash',
     mode: 'history',

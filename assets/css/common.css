@@ -1,3 +1,11 @@
+:root{
+  --c-brand:#409EFF;
+  --c-success:#67C23A;
+  --c-warning:#E6A23C;
+  --c-danger:#F56C6C;
+  --c-info:#909399;
+}
+
 body {
   background-color: skyblue;
 }
@@ -18,44 +26,6 @@ body > .container > section {
   color: #fff;
 }
 
-.box-wrap{
-  box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.33);
-
-}
-.box-wrap > div {
-  position: relative;
-  width: calc(100%/3);
-  height: 6rem;
-  line-height: 5rem;
-  font-size: 4rem;
-  font-weight: bold;
-  border: .125rem solid gray;
-  background: lightgray;
-  box-shadow: -0.25rem -0.25rem 0.25rem rgba(0,0,0,.88) inset;
-  cursor: pointer;
-}
-.box-wrap.w2h2 > div{
-  width: calc(100%/2);
-}
-.box-wrap.w2h2 > div:nth-of-type(4) ~ div{
-  display: none;
-}
-.box-wrap > div.correct {
-  box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.9) inset;
-  color: #fff;
-  background: limegreen;
-}
-
-.box-wrap > div.error {
-  background: indianred;
-}
-
-.box-wrap ~ img {
-  display: none;
-  top: 57%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
 
 #answer {
   font-size: 1.25rem;
