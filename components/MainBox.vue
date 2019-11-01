@@ -27,7 +27,7 @@
       <output id="counter" class="font-weight-bold">{{counter}}</output>
       道题
     </p>
-    <p v-else>结束</p>
+    <p class="mt-2" v-else>结束 <el-button type="primary" size="mini" @click="playAgain">再来一局</el-button></p>
     <hr class="my-3">
     <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>共{{this.passOperateChar.length}}个</p>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
@@ -42,7 +42,41 @@
 
     export default {
         name: "MainBox",
+        inject:['reload'],
+        data() {
+            return {
+                isChecked:false,
+                limitNum: 15,
+                blockNum: 4,
+                showOkPic: false,
+                blankPic:true,
+                $good: {},
+                $sound_correct: {},
+                $sound_next: {},
+                timer: '',
+                thumbAttr: '',
+                boxActive: -1,
+                typeRange: ['数字', '大写字母', '小写字母', '符号'],
+                typeRanges: ['数字', '大写字母', '小写字母', '符号'],
+                displayMode: '2x2',
+                displayModes: ['2x2', '3x2'],
+                result: '',
+                numbers: '0123456789',
+                lowerLetters: '',
+                upperLetters: '',
+                operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
+                passOperateChar: '+-×÷><=_，。：\/#*@$&|%',
+                fillStr: [],
+                counter:1,
+                goodWidth:'w-50',
+                isEnd:false
+            }
+        },
         methods: {
+            playAgain(){
+                location.reload()
+                // this.reload()
+            },
             generateLetters() { // 大写字母的ASC2码是65~90
                 let arr = '';
                 for (let i = 65; i < 65 + 26; i++) {
@@ -69,7 +103,6 @@
                 // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
                 this.showOkPic = false;
                 this.isChecked = false;
-                // this.timer = null;
                 this.boxActive = -1;
                 let charRange = '';
                 this.typeRange.forEach((item) => {
@@ -104,13 +137,6 @@
                 //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
                 // 所以this.resultIndex在0~n的位置对应n个tempArr字符的n+1个空隙中
                 this.fillStr = (tempArr.slice(0, this.resultIndex) + this.result + tempArr.slice(this.resultIndex)).split('');
-                /*console.log({
-                    charRange,
-                    result: this.result,
-                    resultIndex: this.resultIndex,
-                    tempArr,
-                    fillStr: this.fillStr
-                });*/
                 Bus.$emit('setResult', this.result)
             },
             next() {
@@ -145,35 +171,6 @@
                     }
                 });*/
 
-            }
-        },
-        data() {
-            return {
-                isChecked:false,
-                limitNum: 15,
-                blockNum: 4,
-                showOkPic: false,
-                blankPic:true,
-                $good: {},
-                $sound_correct: {},
-                $sound_next: {},
-                timer: '',
-                thumbAttr: '',
-                boxActive: -1,
-                typeRange: ['数字', '大写字母', '小写字母', '符号'],
-                typeRanges: ['数字', '大写字母', '小写字母', '符号'],
-                displayMode: '2x2',
-                displayModes: ['2x2', '3x2'],
-                result: '',
-                numbers: '0123456789',
-                lowerLetters: '',
-                upperLetters: '',
-                operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
-                passOperateChar: '+-×÷><=_，。：\/#*@$&|%',
-                fillStr: [],
-                counter:1,
-                goodWidth:'w-50',
-                isEnd:false
             }
         },
         created() {
