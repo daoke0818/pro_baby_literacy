@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="16">
         <h1 class="title">
-          阿洛识字
+          阿洛识字(新版)
         </h1>
       </el-col>
       <el-col :span="4">

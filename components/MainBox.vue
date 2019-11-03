@@ -231,7 +231,7 @@
   .box-wrap > div.correct {
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.9) inset;
     color: #fff;
-    background: limegreen;
+    background: var(--c-success);
     pointer-events: none;
   }
 
