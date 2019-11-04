@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form>
+    <form >
       <label>请选择练习范围</label>
       <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
         <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
@@ -16,7 +16,7 @@
     <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
-        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)" :class="isChecked && index===+resultIndex?'correct':'' ">{{item}}</div>
+        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)"  :class="isChecked && index === +resultIndex?'correct':'' ">{{item}}</div>
       </div>
       <ok-pic :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
 
@@ -27,9 +27,12 @@
       <output id="counter" class="font-weight-bold">{{counter}}</output>
       道题
     </p>
-    <p v-else>结束</p>
+    <p class="mt-2" v-else>结束 <el-button type="primary" size="mini" @click="playAgain">再来一局</el-button></p>
     <hr class="my-3">
-    <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>共{{this.passOperateChar.length}}个</p>
+    <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>
+      共{{this.passOperateChar.length}}个<br>
+      <el-alert class="mt-2" title="注意：键盘输入不支持一些中文标点和数学符号，比如“：× ÷ ， 。 ：”" type="warning"></el-alert>
+    </p>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
     <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
   </div>
@@ -42,7 +45,40 @@
 
     export default {
         name: "MainBox",
+        data() {
+            return {
+                isChecked:false,
+                limitNum: 15,
+                blockNum: 4,
+                showOkPic: false,
+                blankPic:true,
+                $good: {},
+                $sound_correct: {},
+                $sound_next: {},
+                timer: '',
+                thumbAttr: '',
+                boxActive: -1,
+                typeRange: ['数字', '大写字母', '小写字母', '符号'],
+                typeRanges: ['数字', '大写字母', '小写字母', '符号'],
+                displayMode: '2x2',
+                displayModes: ['2x2', '3x2'],
+                result: '',
+                resultIndex:0,
+                numbers: '0123456789',
+                lowerLetters: '',
+                upperLetters: '',
+                operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
+                passOperateChar: '+-×÷><=_，。：\/#*@$&|%',
+                fillStr: [],
+                counter:1,
+                goodWidth:'w-50',
+                isEnd:false
+            }
+        },
         methods: {
+            playAgain(){
+                location.reload()
+            },
             generateLetters() { // 大写字母的ASC2码是65~90
                 let arr = '';
                 for (let i = 65; i < 65 + 26; i++) {
@@ -65,11 +101,9 @@
                 this.blankPic = blankPic;
             },
             shuffle() {
-
                 // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
                 this.showOkPic = false;
                 this.isChecked = false;
-                // this.timer = null;
                 this.boxActive = -1;
                 let charRange = '';
                 this.typeRange.forEach((item) => {
@@ -104,18 +138,10 @@
                 //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
                 // 所以this.resultIndex在0~n的位置对应n个tempArr字符的n+1个空隙中
                 this.fillStr = (tempArr.slice(0, this.resultIndex) + this.result + tempArr.slice(this.resultIndex)).split('');
-                /*console.log({
-                    charRange,
-                    result: this.result,
-                    resultIndex: this.resultIndex,
-                    tempArr,
-                    fillStr: this.fillStr
-                });*/
                 Bus.$emit('setResult', this.result)
             },
             next() {
                 if (++this.counter > this.limitNum) {
-                    this.counter--;
                     alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
                     this.isEnd = true;
                     return false;
@@ -124,6 +150,9 @@
                     this.$sound_next.play();
                     this.shuffle();
                 }
+            },
+            keyDownBlock(e){
+                console.log(e)
             },
             clickBlock(index) {
                 const checkRight = () => {
@@ -140,46 +169,14 @@
                 if (index === +this.resultIndex) {
                     checkRight()
                 }
-                /* $('body').keyup(function (e) {
-                    if (!that.timer && e.key === that.result) {
-                        checkRight()
-                    }
-                });*/
-
-            }
-        },
-        data() {
-            return {
-                isChecked:false,
-                limitNum: 15,
-                blockNum: 4,
-                showOkPic: false,
-                blankPic:true,
-                $good: {},
-                $sound_correct: {},
-                $sound_next: {},
-                timer: '',
-                thumbAttr: '',
-                boxActive: -1,
-                typeRange: ['数字', '大写字母', '小写字母', '符号'],
-                typeRanges: ['数字', '大写字母', '小写字母', '符号'],
-                displayMode: '2x2',
-                displayModes: ['2x2', '3x2'],
-                result: '',
-                numbers: '0123456789',
-                lowerLetters: '',
-                upperLetters: '',
-                operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
-                passOperateChar: '+-×÷><=_，。：\/#*@$&|%',
-                fillStr: [],
-                counter:1,
-                goodWidth:'w-50',
-                isEnd:false
             }
         },
         created() {
             this.lowerLetters = this.generateLetters().toLocaleLowerCase();
             this.upperLetters = this.generateLetters();
+            window.onkeydown = (e) => {
+                this.clickBlock(this.fillStr.indexOf(e.key))
+            }
         },
         mounted() {
             this.$good = document.querySelector('#good');

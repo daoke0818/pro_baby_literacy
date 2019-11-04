@@ -28,7 +28,7 @@
   border: .0625rem solid gray;
   &.pass{
     background: url("../static/img/egg.jpg") center center no-repeat;
-    background-size: contain;
+    background-size: 120% 120%;
    }
 }
 </style>

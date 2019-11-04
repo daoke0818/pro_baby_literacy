@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container >
     <el-header>
       <my-header/>
     </el-header>
@@ -29,7 +29,10 @@
             return {}
 
         },
-        methods: {},
+        methods: {
+
+
+        },
         mounted(){
         }
     }
