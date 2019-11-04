@@ -21,7 +21,7 @@
       <ok-pic :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
 
     </section>
-    <audio id="pippaPig" preload autoplay src="music/PeppaPig.m4a" controls v-if="isEnd" ></audio>
+    <audio id="pippaPig" preload autoplay src="music/PeppaPig.mp3" controls v-if="isEnd" ></audio>
     <MyProgress :total="limitNum" :now="counter"/>
     <p v-if="counter<=limitNum">第
       <output id="counter" class="font-weight-bold">{{counter}}</output>
