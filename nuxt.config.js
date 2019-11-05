@@ -5,7 +5,8 @@ export default {
   ** Headers of the page
   */
   head: {
-    title: process.env.npm_package_name || '',
+    // title: process.env.npm_package_name || '', // 修改package里面的name为中文会报错
+    title: '阿洛识字' || '',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -55,9 +56,9 @@ export default {
   },
   // 用generate打包时使用hash和相对路径./
   router: {
-    // mode: 'hash',
-    mode: 'history',
-    base: '/'
+    mode: 'hash',
+    // mode: 'history',
+    base: './'
   }
 
 }

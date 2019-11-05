@@ -29,10 +29,18 @@
     </p>
     <p class="mt-2" v-else>结束 <el-button type="primary" size="mini" @click="playAgain">再来一局</el-button></p>
     <hr class="my-3">
-    <p id="tip" v-if="typeRange.includes('符号')">目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>
-      共{{this.passOperateChar.length}}个<br>
+    <div id="tip" v-if="typeRange.includes('符号')">
+<!--      目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>
+      共{{this.passOperateChar.length}}个<br>-->
+      <el-collapse>
+        <el-collapse-item title="部分符号读法" type="success">
+          <ul>
+            <li v-for="(item,index) in this.operateCharArray" v-if="item[1]"><b>{{item[0]}}</b>：{{item[1]}}</li>
+          </ul>
+        </el-collapse-item>
+      </el-collapse>
       <el-alert class="mt-2" title="注意：键盘输入不支持一些中文标点和数学符号，比如“：× ÷ ， 。 ：”" type="warning"></el-alert>
-    </p>
+    </div>
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
     <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
   </div>
@@ -67,8 +75,9 @@
                 numbers: '0123456789',
                 lowerLetters: '',
                 upperLetters: '',
-                operateChar: '!@#$%^&*()_+{}|:"<>?-=[];\',./`~×÷' + '，。：',
-                passOperateChar: '+-×÷><=_，。：\/#*@$&|%',
+                operateCharArray: [['`','反引号'], ['~','波浪号'], ['!',''], ['@','同单词at'], ['#',''], ['$','同单词dollar'], ['%',''], ['^','尖角号'], ['&','同单词and'], ['*',''], ['\\','反斜杠'], ['/','斜杠'], ['(','左小括号或左圆括号'], [')',''], ['[','左中括号或左方括号'], [']',''], ['{',''], ['}','右大括号或右花括号'], ['<',''], ['>','大于号或右尖括号'],['_','下划线'], ['|','竖杠或管道符'], [',',''], ['.','小数点或英文句号'], [';',''], ['?',''], [':',''], ['\'','单引号'], ['\"','双引号'], ['+',''], ['-',''], ['×',''], ['÷',''], ['=',''],  ['。',''], ['《','左书名号'], ['》','']],
+                operateChar: '',
+                passOperateChar: '',
                 fillStr: [],
                 counter:1,
                 goodWidth:'w-50',
@@ -174,9 +183,12 @@
         created() {
             this.lowerLetters = this.generateLetters().toLocaleLowerCase();
             this.upperLetters = this.generateLetters();
+            this.operateChar = this.operateCharArray.map(item=>item[0]).join('');
+            this.passOperateChar = this.operateChar;
             window.onkeydown = (e) => {
                 this.clickBlock(this.fillStr.indexOf(e.key))
             }
+            console.log(this.operateChar.split('').map(item=>"['"+item+"','']"))
         },
         mounted() {
             this.$good = document.querySelector('#good');
@@ -241,6 +253,8 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-
+  .el-collapse-item [role=tab] [role=button]{
+    padding-left: .5rem;
+  }
 </style>
 
