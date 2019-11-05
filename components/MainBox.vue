@@ -1,13 +1,15 @@
 <template>
   <div>
-    <form >
+    <form>
       <label>请选择练习范围</label>
-      <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
+      <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange"
+                         size="small" :min="1">
         <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
       </el-checkbox-group>
       <label>请选择显示模式</label>
       <div>
-        <el-radio-group :style="{pointerEvents: isEnd?'none':''}" v-model="displayMode" @change="changeDisplayMode" size="small">
+        <el-radio-group :style="{pointerEvents: isEnd?'none':''}" v-model="displayMode" @change="changeDisplayMode"
+                        size="small">
           <el-radio-button v-for="item in displayModes" :key="item" :label="item"></el-radio-button>
         </el-radio-group>
       </div>
@@ -16,22 +18,26 @@
     <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
-        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)"  :class="isChecked && index === +resultIndex?'correct':'' ">{{item}}</div>
+        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)"
+             :class="isChecked && index === +resultIndex?'correct':'' ">{{item}}
+        </div>
       </div>
       <ok-pic :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
 
     </section>
-    <audio id="pippaPig" preload autoplay src="music/PeppaPig.mp3" controls v-if="isEnd" ></audio>
+    <audio id="pippaPig" preload autoplay src="music/PeppaPig.mp3" controls v-if="isEnd"></audio>
     <MyProgress :total="limitNum" :now="counter"/>
     <p v-if="counter<=limitNum">第
       <output id="counter" class="font-weight-bold">{{counter}}</output>
       道题
     </p>
-    <p class="mt-2" v-else>结束 <el-button type="primary" size="mini" @click="playAgain">再来一局</el-button></p>
+    <p class="mt-2" v-else>结束
+      <el-button type="primary" size="mini" @click="playAgain">再来一局</el-button>
+    </p>
     <hr class="my-3">
     <div id="tip" v-if="typeRange.includes('符号')">
-<!--      目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>
-      共{{this.passOperateChar.length}}个<br>-->
+      <!--      目前已经学过的符号有：<br>{{this.passOperateChar.split('').join(' ')}}<br>
+            共{{this.passOperateChar.length}}个<br>-->
       <el-collapse>
         <el-collapse-item title="部分符号读法" type="success">
           <ul>
@@ -55,11 +61,11 @@
         name: "MainBox",
         data() {
             return {
-                isChecked:false,
+                isChecked: false,
                 limitNum: 15,
                 blockNum: 4,
                 showOkPic: false,
-                blankPic:true,
+                blankPic: true,
                 $good: {},
                 $sound_correct: {},
                 $sound_next: {},
@@ -71,21 +77,21 @@
                 displayMode: '2x2',
                 displayModes: ['2x2', '3x2'],
                 result: '',
-                resultIndex:0,
+                resultIndex: 0,
                 numbers: '0123456789',
                 lowerLetters: '',
                 upperLetters: '',
-                operateCharArray: [['`','反引号'], ['~','波浪号'], ['!',''], ['@','同单词at'], ['#',''], ['$','同单词dollar'], ['%',''], ['^','尖角号'], ['&','同单词and'], ['*',''], ['\\','反斜杠'], ['/','斜杠'], ['(','左小括号或左圆括号'], [')',''], ['[','左中括号或左方括号'], [']',''], ['{',''], ['}','右大括号或右花括号'], ['<',''], ['>','大于号或右尖括号'],['_','下划线'], ['|','竖杠或管道符'], [',',''], ['.','小数点或英文句号'], [';',''], ['?',''], [':',''], ['\'','单引号'], ['\"','双引号'], ['+',''], ['-',''], ['×',''], ['÷',''], ['=',''],  ['。',''], ['《','左书名号'], ['》','']],
+                operateCharArray: [['`', '反引号'], ['~', '波浪号'], ['!', ''], ['@', '同单词at'], ['#', ''], ['$', '同单词dollar'], ['%', ''], ['^', '尖角号'], ['&', '同单词and'], ['*', ''], ['\\', '反斜杠'], ['/', '斜杠'], ['(', '左小括号或左圆括号'], [')', ''], ['[', '左中括号或左方括号'], [']', ''], ['{', ''], ['}', '右大括号或右花括号'], ['<', ''], ['>', '大于号或右尖括号'], ['_', '下划线'], ['|', '竖杠或管道符'], [',', ''], ['.', '小数点或英文句号'], [';', ''], ['?', ''], [':', ''], ['\'', '单引号'], ['\"', '双引号'], ['+', ''], ['-', ''], ['×', ''], ['÷', ''], ['=', ''], ['。', ''], ['《', '左书名号'], ['》', '']],
                 operateChar: '',
                 passOperateChar: '',
                 fillStr: [],
-                counter:1,
-                goodWidth:'w-50',
-                isEnd:false
+                counter: 1,
+                goodWidth: 'w-50',
+                isEnd: false
             }
         },
         methods: {
-            playAgain(){
+            playAgain() {
                 location.reload()
             },
             generateLetters() { // 大写字母的ASC2码是65~90
@@ -106,7 +112,7 @@
                 }
                 this.shuffle();
             },
-            setBlankPic(blankPic){
+            setBlankPic(blankPic) {
                 this.blankPic = blankPic;
             },
             shuffle() {
@@ -134,7 +140,7 @@
 
                 this.result = charRange.rdm();
                 // 如果2x2则只有3个填充块和4个可插入答案的位置
-                this.resultIndex = (this.blockNum-1).rdm();
+                this.resultIndex = (this.blockNum - 1).rdm();
                 let tempArr = '';
                 // 生成随机字符串以填充方格
                 while (true) {
@@ -160,7 +166,7 @@
                     this.shuffle();
                 }
             },
-            keyDownBlock(e){
+            keyDownBlock(e) {
                 console.log(e)
             },
             clickBlock(index) {
@@ -183,12 +189,12 @@
         created() {
             this.lowerLetters = this.generateLetters().toLocaleLowerCase();
             this.upperLetters = this.generateLetters();
-            this.operateChar = this.operateCharArray.map(item=>item[0]).join('');
+            this.operateChar = this.operateCharArray.map(item => item[0]).join('');
             this.passOperateChar = this.operateChar;
             window.onkeydown = (e) => {
                 this.clickBlock(this.fillStr.indexOf(e.key))
             }
-            console.log(this.operateChar.split('').map(item=>"['"+item+"','']"))
+            console.log(this.operateChar.split('').map(item => "['" + item + "','']"))
         },
         mounted() {
             this.$good = document.querySelector('#good');
@@ -196,49 +202,55 @@
             this.$sound_next = document.querySelector('#sound_next');
             this.shuffle();
         },
-        updated(){
+        updated() {
 
         },
-        components:{
+        components: {
             MyProgress,
             OkPic
         }
     }
 </script>
 
-<style>
+<style lang="scss">
   .el-checkbox-group, .el-radio-group {
     margin: .25rem 0 .5rem;
   }
-  .el-checkbox-button.is-disabled .el-checkbox-button__inner{
-    color:#000;
-    border-color: var(--c-brand)!important;
-    background: var(--c-brand)!important;
+
+  .el-checkbox-button.is-disabled .el-checkbox-button__inner {
+    color: #000;
+    border-color: var(--c-brand) !important;
+    background: var(--c-brand) !important;
   }
+
   .box-wrap {
     text-align: center;
-    box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.33);
+    box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .33);
   }
+
   .box-wrap > div {
     position: relative;
-    width: calc(100%/3);
+    width: calc(100% / 3);
     height: 6rem;
     line-height: 5rem;
     font-size: 4rem;
     font-weight: bold;
     border: .125rem solid gray;
     background: lightgray;
-    box-shadow: -0.25rem -0.25rem 0.25rem rgba(0,0,0,.88) inset;
+    box-shadow: -0.25rem -0.25rem 0.25rem rgba(0, 0, 0, .88) inset;
     cursor: pointer;
   }
-  .box-wrap.w2h2 > div{
-    width: calc(100%/2);
+
+  .box-wrap.w2h2 > div {
+    width: calc(100% / 2);
   }
-  .box-wrap.w2h2 > div:nth-of-type(4) ~ div{
+
+  .box-wrap.w2h2 > div:nth-of-type(4) ~ div {
     display: none;
   }
+
   .box-wrap > div.correct {
-    box-shadow: 0.25rem 0.25rem 0.25rem rgba(0,0,0,.9) inset;
+    box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .9) inset;
     color: #fff;
     background: var(--c-success);
     pointer-events: none;
@@ -253,8 +265,19 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  .el-collapse-item [role=tab] [role=button]{
+
+  .el-collapse-item [role=tab] [role=button] {
     padding-left: .5rem;
   }
+
+  #tip ul {
+    list-style: none;
+
+    & > li > b {
+      display: inline-block;
+      width: 1rem;
+    }
+  }
+
 </style>
 

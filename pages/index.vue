@@ -1,5 +1,5 @@
 <template>
-  <el-container >
+  <el-container>
     <el-header>
       <my-header/>
     </el-header>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import Vue from "vue";
+    import Vue from "vue";
     import MyHeader from "../components/MyHeader";
     import MainBox from "../components/MainBox";
     import common from "../assets/js/common";
@@ -29,11 +29,8 @@
             return {}
 
         },
-        methods: {
-
-
-        },
-        mounted(){
+        methods: {},
+        mounted() {
         }
     }
 </script>
@@ -44,7 +41,7 @@
   body {
     background: lightskyblue;
 
-    .el-header,.el-footer {
+    .el-header, .el-footer {
       height: auto;
       padding: 0;
     }

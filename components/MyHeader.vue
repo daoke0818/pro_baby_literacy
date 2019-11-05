@@ -12,7 +12,9 @@
         </h1>
       </el-col>
       <el-col :span="4">
-        <div><output id="answer" >{{result}}</output></div>
+        <div>
+          <output id="answer">{{result}}</output>
+        </div>
 
       </el-col>
     </el-row>
@@ -20,29 +22,31 @@
 
 </template>
 <script>
-  import Bus from '../middleware/BusEvent'
+    import Bus from '../middleware/BusEvent'
+
     export default {
         name: 'my-header',
-        data(){
-            return{
-                result:''
+        data() {
+            return {
+                result: ''
             }
         },
-        beforeCreate(){
-            Bus.$on('setResult',(result)=>{
+        beforeCreate() {
+            Bus.$on('setResult', (result) => {
                 this.result = result
             })
         },
-        beforeDestroy(){
+        beforeDestroy() {
             Bus.$off('setResult')
         }
     }
 </script>
 <style lang="scss">
-  .el-row{
+  .el-row {
     top: 0;
     padding: .5rem 0;
     background: #409EFF;
+
     h1 {
       color: #fff;
       font-size: 1.25rem;
