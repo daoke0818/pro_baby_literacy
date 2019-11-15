@@ -4,7 +4,7 @@
       <label>请选择练习范围</label>
       <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange"
                          size="small" :min="1">
-        <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
+        <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item" @click.native="changeTypeChecked"></el-checkbox-button>
       </el-checkbox-group>
       <label>请选择显示模式</label>
       <div>
@@ -61,6 +61,7 @@
         name: "MainBox",
         data() {
             return {
+              // changeTypeChecked:false,
                 isChecked: false,
                 limitNum: 15,
                 blockNum: 4,
@@ -72,8 +73,8 @@
                 timer: '',
                 thumbAttr: '',
                 boxActive: -1,
-                typeRange: ['数字', '大写字母', '小写字母', '符号'],
-                typeRanges: ['数字', '大写字母', '小写字母', '符号'],
+                typeRange: ['符号'],
+                typeRanges: ['数字', '大写字母', '小写字母', '符号', '汉字'],
                 displayMode: '2x2',
                 displayModes: ['2x2', '3x2'],
                 result: '',
@@ -84,6 +85,8 @@
                 operateCharArray: [['`', '反引号'], ['~', '波浪号'], ['!', ''], ['@', '同单词at'], ['#', ''], ['$', '同单词dollar'], ['%', ''], ['^', '尖角号'], ['&', '同单词and'], ['*', ''], ['\\', '反斜杠'], ['/', '斜杠'], ['(', '左小括号或左圆括号'], [')', ''], ['[', '左中括号或左方括号'], [']', ''], ['{', ''], ['}', '右大括号或右花括号'], ['<', ''], ['>', '大于号或右尖括号'], ['_', '下划线'], ['|', '竖杠或管道符'], [',', ''], ['.', '小数点或英文句号'], [';', ''], ['?', ''], [':', ''], ['\'', '单引号'], ['\"', '双引号'], ['+', ''], ['-', ''], ['×', ''], ['÷', ''], ['=', ''], ['。', ''], ['《', '左书名号'], ['》', '']],
                 operateChar: '',
                 passOperateChar: '',
+                hanZi:'',
+                passHanZi:['一二三四五六七八九十'],
                 fillStr: [],
                 counter: 1,
                 goodWidth: 'w-50',
@@ -101,7 +104,18 @@
                 }
                 return arr;
             },
-            changeTypeRange() {
+          changeTypeChecked(e){
+              if(e.target.innerHTML==='汉字'){
+                this.typeRange = ['汉字']
+              }else{
+                let index = this.typeRange.indexOf('汉字');
+                if(index>=0){
+                  this.typeRange.splice(index,1,null)
+                }
+                
+              }
+          },
+            changeTypeRange(item) {
                 this.shuffle();
             },
             changeDisplayMode() {
@@ -134,6 +148,9 @@
                             break;
                         case '符号':
                             charRange += this.passOperateChar;
+                            break;
+                        case '汉字':
+                            charRange += this.passHanZi;
                             break;
                     }
                 });
@@ -194,7 +211,7 @@
             window.onkeydown = (e) => {
                 this.clickBlock(this.fillStr.indexOf(e.key))
             }
-            console.log(this.operateChar.split('').map(item => "['" + item + "','']"))
+            // console.log(this.operateChar.split('').map(item => "['" + item + "','']"))
         },
         mounted() {
             this.$good = document.querySelector('#good');

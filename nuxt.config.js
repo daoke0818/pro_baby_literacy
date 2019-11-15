@@ -55,7 +55,7 @@ export default {
   router: {
     mode: 'hash',
     // mode: 'history',
-    base: './'
+    base: '/'
   }
 
 }
