@@ -56,7 +56,7 @@
   import Bus from "../middleware/BusEvent";
   import MyProgress from '../components/Progress'
   import OkPic from '../components/OkPic'
-  
+
   export default {
     name: "MainBox",
     data() {
@@ -86,7 +86,7 @@
         operateChar: '',
         passOperateChar: '',
         hanZi: '',
-        passHanZi: ['一二三四五六七八九十'],
+        passHanZi: ['一二三四五六七八九十人口手上中下'],
         fillStr: [],
         counter: 1,
         goodWidth: 'w-50',
@@ -113,7 +113,7 @@
           if (index >= 0) {
             this.typeRange.splice(index, 1)
           }
-          
+
         }
       },
       changeTypeRange(item) {
@@ -155,7 +155,7 @@
               break;
           }
         });
-        
+
         this.result = charRange.rdm();
         // 如果2x2则只有3个填充块和4个可插入答案的位置
         this.resultIndex = (this.blockNum - 1).rdm();
@@ -197,7 +197,7 @@
           this.$sound_correct.pause();
           this.$sound_correct.play();
           this.timer = setTimeout(this.next, this.blankPic ? 1000 : 2500);
-          
+
         };
         if (index === +this.resultIndex) {
           checkRight()
@@ -230,23 +230,23 @@
   .el-checkbox-group, .el-radio-group {
     margin: .25rem 0 .5rem;
   }
-  
+
   .el-checkbox-button.is-disabled .el-checkbox-button__inner {
     color: #000;
     border-color: var(--c-brand) !important;
     background: var(--c-brand) !important;
   }
-  
+
   .box-wrap {
     text-align: center;
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .33);
   }
-  
+
   .box-wrap > div {
     position: relative;
     width: calc(100% / 3);
     height: 6rem;
-    line-height: 5rem;
+    line-height: 5.5rem;
     font-size: 4rem;
     font-weight: bold;
     border: .125rem solid gray;
@@ -254,39 +254,39 @@
     box-shadow: -0.25rem -0.25rem 0.25rem rgba(0, 0, 0, .88) inset;
     cursor: pointer;
   }
-  
+
   .box-wrap.w2h2 > div {
     width: calc(100% / 2);
   }
-  
+
   .box-wrap.w2h2 > div:nth-of-type(4) ~ div {
     display: none;
   }
-  
+
   .box-wrap > div.correct {
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .9) inset;
     color: #fff;
     background: var(--c-success);
     pointer-events: none;
   }
-  
+
   .box-wrap > div.error {
     background: indianred;
   }
-  
+
   .box-wrap ~ img {
     top: 57%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
-  
+
   .el-collapse-item [role=tab] [role=button] {
     padding-left: .5rem;
   }
-  
+
   #tip ul {
     list-style: none;
-    
+
     & > li > b {
       display: inline-block;
       width: 1rem;
