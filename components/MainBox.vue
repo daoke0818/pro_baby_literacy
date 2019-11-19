@@ -4,7 +4,8 @@
       <label>请选择练习范围</label>
       <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange"
                          size="small" :min="1">
-        <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"></el-checkbox-button>
+        <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"
+                            @click.native="changeTypeChecked"></el-checkbox-button>
       </el-checkbox-group>
       <label>请选择显示模式</label>
       <div>
@@ -23,7 +24,6 @@
         </div>
       </div>
       <ok-pic :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
-
     </section>
     <audio id="pippaPig" preload autoplay src="music/PeppaPig.mp3" controls v-if="isEnd"></audio>
     <MyProgress :total="limitNum" :now="counter"/>
@@ -53,163 +53,177 @@
 </template>
 
 <script>
-    import Bus from "../middleware/BusEvent";
-    import MyProgress from '../components/Progress'
-    import OkPic from '../components/OkPic'
+  import Bus from "../middleware/BusEvent";
+  import MyProgress from '../components/Progress'
+  import OkPic from '../components/OkPic'
 
-    export default {
-        name: "MainBox",
-        data() {
-            return {
-                isChecked: false,
-                limitNum: 15,
-                blockNum: 4,
-                showOkPic: false,
-                blankPic: true,
-                $good: {},
-                $sound_correct: {},
-                $sound_next: {},
-                timer: '',
-                thumbAttr: '',
-                boxActive: -1,
-                typeRange: ['数字', '大写字母', '小写字母', '符号'],
-                typeRanges: ['数字', '大写字母', '小写字母', '符号'],
-                displayMode: '2x2',
-                displayModes: ['2x2', '3x2'],
-                result: '',
-                resultIndex: 0,
-                numbers: '0123456789',
-                lowerLetters: '',
-                upperLetters: '',
-                operateCharArray: [['`', '反引号'], ['~', '波浪号'], ['!', ''], ['@', '同单词at'], ['#', ''], ['$', '同单词dollar'], ['%', ''], ['^', '尖角号'], ['&', '同单词and'], ['*', ''], ['\\', '反斜杠'], ['/', '斜杠'], ['(', '左小括号或左圆括号'], [')', ''], ['[', '左中括号或左方括号'], [']', ''], ['{', ''], ['}', '右大括号或右花括号'], ['<', ''], ['>', '大于号或右尖括号'], ['_', '下划线'], ['|', '竖杠或管道符'], [',', ''], ['.', '小数点或英文句号'], [';', ''], ['?', ''], [':', ''], ['\'', '单引号'], ['\"', '双引号'], ['+', ''], ['-', ''], ['×', ''], ['÷', ''], ['=', ''], ['。', ''], ['《', '左书名号'], ['》', '']],
-                operateChar: '',
-                passOperateChar: '',
-                fillStr: [],
-                counter: 1,
-                goodWidth: 'w-50',
-                isEnd: false
-            }
-        },
-        methods: {
-            playAgain() {
-                location.reload()
-            },
-            generateLetters() { // 大写字母的ASC2码是65~90
-                let arr = '';
-                for (let i = 65; i < 65 + 26; i++) {
-                    arr += String.fromCharCode(i);
-                }
-                return arr;
-            },
-            changeTypeRange() {
-                this.shuffle();
-            },
-            changeDisplayMode() {
-                if (this.displayMode === '2x2') {
-                    this.blockNum = 4
-                } else if (this.displayMode === '3x2') {
-                    this.blockNum = 6
-                }
-                this.shuffle();
-            },
-            setBlankPic(blankPic) {
-                this.blankPic = blankPic;
-            },
-            shuffle() {
-                // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
-                this.showOkPic = false;
-                this.isChecked = false;
-                this.boxActive = -1;
-                let charRange = '';
-                this.typeRange.forEach((item) => {
-                    switch (item) {
-                        case "数字":
-                            charRange += this.numbers;
-                            break;
-                        case '大写字母':
-                            charRange += this.upperLetters;
-                            break;
-                        case '小写字母':
-                            charRange += this.lowerLetters;
-                            break;
-                        case '符号':
-                            charRange += this.passOperateChar;
-                            break;
-                    }
-                });
-
-                this.result = charRange.rdm();
-                // 如果2x2则只有3个填充块和4个可插入答案的位置
-                this.resultIndex = (this.blockNum - 1).rdm();
-                let tempArr = '';
-                // 生成随机字符串以填充方格
-                while (true) {
-                    tempArr = charRange.rdm(this.blockNum - 1);
-                    // 填充的字符不包含当前的答案则退出循环，即不重复
-                    if (!tempArr.includes(this.result + '')) {
-                        break;
-                    }
-                }
-                //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
-                // 所以this.resultIndex在0~n的位置对应n个tempArr字符的n+1个空隙中
-                this.fillStr = (tempArr.slice(0, this.resultIndex) + this.result + tempArr.slice(this.resultIndex)).split('');
-                Bus.$emit('setResult', this.result)
-            },
-            next() {
-                if (++this.counter > this.limitNum) {
-                    alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
-                    this.isEnd = true;
-                    return false;
-                } else {
-                    this.$sound_next.pause();
-                    this.$sound_next.play();
-                    this.shuffle();
-                }
-            },
-            keyDownBlock(e) {
-                console.log(e)
-            },
-            clickBlock(index) {
-                const checkRight = () => {
-                    setTimeout(() => {
-                        this.showOkPic = true
-                    }, 400);
-                    // this.blankPic = false;
-                    this.isChecked = true;
-                    this.$sound_correct.pause();
-                    this.$sound_correct.play();
-                    this.timer = setTimeout(this.next, this.blankPic ? 1000 : 2500);
-
-                };
-                if (index === +this.resultIndex) {
-                    checkRight()
-                }
-            }
-        },
-        created() {
-            this.lowerLetters = this.generateLetters().toLocaleLowerCase();
-            this.upperLetters = this.generateLetters();
-            this.operateChar = this.operateCharArray.map(item => item[0]).join('');
-            this.passOperateChar = this.operateChar;
-            window.onkeydown = (e) => {
-                this.clickBlock(this.fillStr.indexOf(e.key))
-            }
-            console.log(this.operateChar.split('').map(item => "['" + item + "','']"))
-        },
-        mounted() {
-            this.$good = document.querySelector('#good');
-            this.$sound_correct = document.querySelector('#sound_correct');
-            this.$sound_next = document.querySelector('#sound_next');
-            this.shuffle();
-        },
-        updated() {
-
-        },
-        components: {
-            MyProgress,
-            OkPic
+  export default {
+    name: "MainBox",
+    data() {
+      return {
+        // changeTypeChecked:false,
+        isChecked: false,
+        limitNum: 15,
+        blockNum: 4,
+        showOkPic: false,
+        blankPic: true,
+        $good: {},
+        $sound_correct: {},
+        $sound_next: {},
+        timer: '',
+        thumbAttr: '',
+        boxActive: -1,
+        typeRange: ['符号'],
+        typeRanges: ['数字', '大写字母', '小写字母', '符号', '汉字'],
+        displayMode: '2x2',
+        displayModes: ['2x2', '3x2'],
+        result: '',
+        resultIndex: 0,
+        numbers: '0123456789',
+        lowerLetters: '',
+        upperLetters: '',
+        operateCharArray: [['`', '反引号'], ['~', '波浪号'], ['!', ''], ['@', '同单词at'], ['#', ''], ['$', '同单词dollar'], ['%', ''], ['^', '尖角号'], ['&', '同单词and'], ['*', ''], ['\\', '反斜杠'], ['/', '斜杠'], ['(', '左小括号或左圆括号'], [')', ''], ['[', '左中括号或左方括号'], [']', ''], ['{', ''], ['}', '右大括号或右花括号'], ['<', ''], ['>', '大于号或右尖括号'], ['_', '下划线'], ['|', '竖杠或管道符'], [',', ''], ['.', '小数点或英文句号'], [';', ''], ['?', ''], [':', ''], ['\'', '单引号'], ['\"', '双引号'], ['+', ''], ['-', ''], ['×', ''], ['÷', ''], ['=', ''], ['。', ''], ['《', '左书名号'], ['》', '']],
+        operateChar: '',
+        passOperateChar: '',
+        hanZi: '',
+        passHanZi: ['一二三四五六七八九十人口手上中下'],
+        fillStr: [],
+        counter: 1,
+        goodWidth: 'w-50',
+        isEnd: false
+      }
+    },
+    methods: {
+      playAgain() {
+        location.reload()
+      },
+      generateLetters() { // 大写字母的ASC2码是65~90
+        let arr = '';
+        for (let i = 65; i < 65 + 26; i++) {
+          arr += String.fromCharCode(i);
         }
+        return arr;
+      },
+      changeTypeChecked(e) {
+        if (e.target.innerHTML === '汉字') {
+          this.typeRange = ['汉字'];
+          this.changeTypeRange() // 点击汉字按钮没有触发group的change事件
+        } else {
+          let index = this.typeRange.indexOf('汉字');
+          if (index >= 0) {
+            this.typeRange.splice(index, 1)
+          }
+
+        }
+      },
+      changeTypeRange(item) {
+        this.shuffle();
+      },
+      changeDisplayMode() {
+        if (this.displayMode === '2x2') {
+          this.blockNum = 4
+        } else if (this.displayMode === '3x2') {
+          this.blockNum = 6
+        }
+        this.shuffle();
+      },
+      setBlankPic(blankPic) {
+        this.blankPic = blankPic;
+      },
+      shuffle() {
+        // 放在static目录里的文件会自动映射到根目录下，所以路径不用static/开头
+        this.showOkPic = false;
+        this.isChecked = false;
+        this.boxActive = -1;
+        let charRange = '';
+        this.typeRange.forEach((item) => {
+          switch (item) {
+            case "数字":
+              charRange += this.numbers;
+              break;
+            case '大写字母':
+              charRange += this.upperLetters;
+              break;
+            case '小写字母':
+              charRange += this.lowerLetters;
+              break;
+            case '符号':
+              charRange += this.passOperateChar;
+              break;
+            case '汉字':
+              charRange += this.passHanZi;
+              break;
+          }
+        });
+
+        this.result = charRange.rdm();
+        // 如果2x2则只有3个填充块和4个可插入答案的位置
+        this.resultIndex = (this.blockNum - 1).rdm();
+        let tempArr = '';
+        // 生成随机字符串以填充方格
+        while (true) {
+          tempArr = charRange.rdm(this.blockNum - 1);
+          // 填充的字符不包含当前的答案则退出循环，即不重复
+          if (!tempArr.includes(this.result + '')) {
+            break;
+          }
+        }
+        //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
+        // 所以this.resultIndex在0~n的位置对应n个tempArr字符的n+1个空隙中
+        this.fillStr = (tempArr.slice(0, this.resultIndex) + this.result + tempArr.slice(this.resultIndex)).split('');
+        Bus.$emit('setResult', this.result)
+      },
+      next() {
+        if (++this.counter > this.limitNum) {
+          alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
+          this.isEnd = true;
+          return false;
+        } else {
+          this.$sound_next.pause();
+          this.$sound_next.play();
+          this.shuffle();
+        }
+      },
+      keyDownBlock(e) {
+        console.log(e)
+      },
+      clickBlock(index) {
+        const checkRight = () => {
+          setTimeout(() => {
+            this.showOkPic = true
+          }, 400);
+          // this.blankPic = false;
+          this.isChecked = true;
+          this.$sound_correct.pause();
+          this.$sound_correct.play();
+          this.timer = setTimeout(this.next, this.blankPic ? 1000 : 2500);
+
+        };
+        if (index === +this.resultIndex) {
+          checkRight()
+        }
+      }
+    },
+    created() {
+      this.lowerLetters = this.generateLetters().toLocaleLowerCase();
+      this.upperLetters = this.generateLetters();
+      this.operateChar = this.operateCharArray.map(item => item[0]).join('');
+      this.passOperateChar = this.operateChar;
+      window.onkeydown = (e) => {
+        this.clickBlock(this.fillStr.indexOf(e.key))
+      }
+    },
+    mounted() {
+      this.$good = document.querySelector('#good');
+      this.$sound_correct = document.querySelector('#sound_correct');
+      this.$sound_next = document.querySelector('#sound_next');
+      this.shuffle();
+    },
+    components: {
+      MyProgress,
+      OkPic
     }
+  }
 </script>
 
 <style lang="scss">
@@ -232,7 +246,7 @@
     position: relative;
     width: calc(100% / 3);
     height: 6rem;
-    line-height: 5rem;
+    line-height: 5.5rem;
     font-size: 4rem;
     font-weight: bold;
     border: .125rem solid gray;

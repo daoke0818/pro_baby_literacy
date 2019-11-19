@@ -54,8 +54,7 @@ export default {
   // 用generate打包时使用hash和相对路径./
   router: {
     mode: 'hash',
-    // mode: 'history',
-    base: './'
+    base: '/'
   }
 
 }
