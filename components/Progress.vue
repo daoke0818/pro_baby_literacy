@@ -26,9 +26,12 @@
   color: lightgray;
   background: #fff;
   border: .0625rem solid gray;
+  background: url("../static/img/egg.jpg") no-repeat;
+  background-position:  center -100px ;
+  transition: background .3s ease-in;
+  background-size: 120% 120%;
   &.pass{
-    background: url("../static/img/egg.jpg") center center no-repeat;
-    background-size: 120% 120%;
+    background-position:  center center;
    }
 }
 </style>
