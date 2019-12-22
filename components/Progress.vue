@@ -28,10 +28,12 @@
   border: .0625rem solid gray;
   background: url("../static/img/egg.jpg") no-repeat;
   background-position:  center -100px ;
-  transition: background .3s ease-in;
+  transition: all .4s ease-in;
   background-size: 120% 120%;
+  /*transform: scale(.5);*/
   &.pass{
     background-position:  center center;
+    /*transform: scale(1);*/
    }
 }
 </style>
