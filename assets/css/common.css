@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: skyblue;
+  background-color: lightskyblue;
 }
 
 body > .container > section {
@@ -30,7 +30,7 @@ body > .container > section {
 #answer {
   font-size: 1.25rem;
   font-weight: bold;
-  color: rgba(0, 0, 0, .2);
+  color: rgba(0, 0, 0, .15);
   background: rgba(0, 0, 0, .05);
 }
 

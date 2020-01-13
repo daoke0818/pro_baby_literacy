@@ -91,7 +91,7 @@
         operateChar: '',
         passOperateChar: '',
         hanZi: '',
-        passHanZi: ['一二三四五六七八九十人口手上中下大小不子了日月水火山石田土头目耳牙舌鸡蛋爸妈爷奶姥打牛'],
+        passHanZi: ['一二三四五六七八九十人口手上中下大小不对子了月水火海头眼耳鼻舌牙脚地鸡蛋爸妈爷奶姥打牛车太阳对阿洛吃喝来'],
         fillStr: [],
         counter: 1,
         goodWidth: 'w-50',
@@ -304,6 +304,9 @@
 
   #tip {
     .tip-hanzi {
+      .el-collapse-item__wrap{
+        padding-left: .5rem;
+      }
       span{
         display: inline-block;
         letter-spacing: .25rem;
