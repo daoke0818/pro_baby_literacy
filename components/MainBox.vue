@@ -91,7 +91,7 @@
         operateChar: '',
         passOperateChar: '',
         hanZi: '',
-        passHanZi: ['一二三四五六七八九十人口手上中下大小不对子了月水火海头眼耳鼻舌牙脚地鸡蛋爸妈爷奶姥打牛车太阳对阿洛吃喝来'],
+        passHanZi: ['一二三四五六七八九十人口手上中下大小不对子了月水火海头眼耳鼻舌牙脚地鸡蛋爸妈爷奶姥打牛车太阳阿洛吃喝来'],
         fillStr: [],
         counter: 1,
         goodWidth: 'w-50',
@@ -281,11 +281,23 @@
     display: none;
   }
 
+  @keyframes bigger {
+    from{
+      transform: scale(2);
+      opacity: .8;
+    }
+    to{
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
   .box-wrap > div.correct {
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .9) inset;
     color: #fff;
     background: var(--c-success);
     pointer-events: none;
+    animation: bigger .5s ease;
+    z-index: 1;
   }
 
   .box-wrap > div.error {
@@ -296,6 +308,7 @@
     top: 57%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 2;
   }
 
   .el-collapse-item [role=tab] [role=button] {
