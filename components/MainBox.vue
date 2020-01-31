@@ -20,10 +20,10 @@
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
         <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)"
-             :class="isChecked && index === +resultIndex?'correct':'' ">{{item}}
+             :class="isChecked && index === +resultIndex?('correct '+currentAnimation):'' ">{{item}}
         </div>
-      </div>
-      <ok-pic :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
+     </div>
+      <ok-pic :okPicRate="okPicRate" :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
     </section>
     <audio id="pippaPig" preload autoplay src="music/PeppaPig.mp3" controls v-if="isEnd"></audio>
     <MyProgress :total="limitNum" :now="counter"/>
@@ -62,11 +62,14 @@
   import MyProgress from '../components/Progress'
   import OkPic from '../components/OkPic'
 
+  const animationRate = .36; // 选中后数字出现动画的概率
+
   export default {
     name: "MainBox",
     data() {
       return {
         // changeTypeChecked:false,
+        okPicRate: .13, // 选中后图片不出现的概率
         isChecked: false,
         limitNum: 15,
         // blockNum: 4,
@@ -95,6 +98,8 @@
         fillStr: [],
         counter: 1,
         goodWidth: 'w-50',
+        animations: ['rollIn', 'bounceInDown', 'bounceInLeft', 'flipInY', 'rotateIn', 'bounce', 'rubberBand', 'swing'],
+        currentAnimation:'bounceIn',
         isEnd: false
       }
     },
@@ -203,6 +208,7 @@
         console.log(e)
       },
       clickBlock(index) {
+        this.currentAnimation = this.getCorrectAnimation();
         const checkRight = () => {
           setTimeout(() => {
             this.showOkPic = true
@@ -217,6 +223,11 @@
         if (index === +this.resultIndex) {
           checkRight()
         }
+      },
+      getCorrectAnimation() {
+        const temp = Math.random() < animationRate ? this.animations.rdm() : '';
+        console.log(temp);
+        return temp;
       }
     },
     created() {
@@ -281,22 +292,25 @@
     display: none;
   }
 
-  @keyframes bigger {
-    from{
-      transform: scale(2);
-      opacity: .8;
+  /*
+    @keyframes bigger {
+      from{
+        transform: scale(2);
+        opacity: .8;
+      }
+      to{
+        transform: scale(1);
+        opacity: 1;
+      }
     }
-    to{
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
+  */
   .box-wrap > div.correct {
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .9) inset;
     color: #fff;
     background: var(--c-success);
     pointer-events: none;
-    animation: bigger .5s ease;
+    /*animation: bigger .5s ease;*/
+    animation-duration: .88s;
     z-index: 1;
   }
 
@@ -317,15 +331,17 @@
 
   #tip {
     .tip-hanzi {
-      .el-collapse-item__wrap{
+      .el-collapse-item__wrap {
         padding-left: .5rem;
       }
-      span{
+
+      span {
         display: inline-block;
         letter-spacing: .25rem;
-        padding: 0px 1rem;
+        padding: 0 1rem;
       }
     }
+
     ul {
       list-style: none;
 

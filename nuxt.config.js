@@ -24,7 +24,8 @@ export default {
   */
   css: [
     '@/assets/css/fromBootstrap.css',
-    'element-ui/lib/theme-chalk/index.css'
+    'element-ui/lib/theme-chalk/index.css',
+    'animate.css'
   ],
   /*
   ** Plugins to load before mounting the App

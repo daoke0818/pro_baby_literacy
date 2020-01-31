@@ -20,13 +20,14 @@ const disruptOrder = function () {
  */
 const rdm = function (n) {
   let temp = '';
-  if(typeof this === 'number' ){
+  if(typeof this === 'number' ){ // 比如n为5，则temp最终是'012345'
     for(let i = 0; i<=this; i++){
       temp += i;
     }
   }else{
     temp = this;
   }
+  // console.log(temp)
   if(n){
     return temp.disruptOrder().slice(0, n)
   }else{
