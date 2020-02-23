@@ -50,6 +50,13 @@
         </el-collapse-item>
       </el-collapse>
       <el-alert class="mt-2" title="注意：键盘输入不支持一些中文标点和数学符号，比如“：× ÷ ， 。 ：”" type="warning"></el-alert>
+      <div class="mt-2">
+        <p>网址<a href="http://e-art.top/projects/baby_literacy/"> http://e-art.top/projects/baby_literacy/</a>，欢迎大家分享。</p>
+        <p>可以将网址添加到微信浮窗，方便随时使用。</p>
+        <p>如果父母们有好的想法可以到QQ群讨论，群号 1056477760，也可扫描下方二维码加入：</p>
+        <p class="mt-3 text-center"><img src="img/p_aLuoShiZi_qqQun.png" alt=""></p>
+
+      </div>
     </div>
 
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
@@ -62,14 +69,14 @@
   import MyProgress from '../components/Progress'
   import OkPic from '../components/OkPic'
 
-  const animationRate = .36; // 选中后数字出现动画的概率
+  const animationRate = .63; // 选中后数字出现动画的概率
 
   export default {
     name: "MainBox",
     data() {
       return {
         // changeTypeChecked:false,
-        okPicRate: .13, // 选中后图片不出现的概率
+        okPicRate: .1, // 选中后图片出现的概率
         isChecked: false,
         limitNum: 15,
         // blockNum: 4,
@@ -94,11 +101,17 @@
         operateChar: '',
         passOperateChar: '',
         hanZi: '',
-        passHanZi: ['一二三四五六七八九十人口手上中下大小不对子了月水火海头眼耳鼻舌牙脚地鸡蛋爸妈爷奶姥打牛车太阳阿洛吃喝来'],
+        passHanZi: ['一二三四五六七八九十人口手上中下大小不对子了月水火海头眼耳鼻舌牙脚地鸡蛋爸妈爷奶姥打牛车太阳阿洛吃喝来' +
+        '饭米面饼干渣馒碗杯勺' +
+        '穿脱衣服裤袜鞋帽肚嘴' +
+        '床搂瞌睡梦醒抱熊尿纸' +
+        '咸瓶看见书桌板凳佩奇' +
+        '走跑跳路轮扔哭几岁宝'],
         fillStr: [],
         counter: 1,
         goodWidth: 'w-50',
-        animations: ['rollIn', 'bounceInDown', 'bounceInLeft', 'flipInY', 'rotateIn', 'bounce', 'rubberBand', 'swing'],
+        animations: ['rollIn', 'bounceInDown', 'bounceInLeft', 'bounceInUp', 'bounceInRight', 'flip', 'flipInY', 'rotateIn',
+          'bounce', 'rubberBand', 'swing','pulse','shake','tada','wobble','jello','heartBeat'],
         currentAnimation:'bounceIn',
         isEnd: false
       }
@@ -135,7 +148,6 @@
           if (index >= 0) {
             this.typeRange.splice(index, 1)
           }
-
         }
       },
       changeTypeRange(item) {
@@ -292,24 +304,11 @@
     display: none;
   }
 
-  /*
-    @keyframes bigger {
-      from{
-        transform: scale(2);
-        opacity: .8;
-      }
-      to{
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-  */
   .box-wrap > div.correct {
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .9) inset;
     color: #fff;
     background: var(--c-success);
     pointer-events: none;
-    /*animation: bigger .5s ease;*/
     animation-duration: .88s;
     z-index: 1;
   }
@@ -322,6 +321,7 @@
     top: 57%;
     left: 50%;
     transform: translate(-50%, -50%);
+    /*max-height: 15.5rem;*/
     z-index: 2;
   }
 
