@@ -2,18 +2,25 @@
   <div>
     <form>
       <label>请选择练习范围</label>
-      <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange"
-                         size="small" :min="1">
-        <el-checkbox-button class="testScope" v-for="item in typeRanges" :key="item" :label="item"
+      <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
+        <el-checkbox-button class="testScope" v-for="(item,index) in typeRanges" :key="item+index" :label="item"
                             @click.native="changeTypeChecked"></el-checkbox-button>
       </el-checkbox-group>
       <label>请选择显示模式</label>
       <div>
-        <el-radio-group :style="{pointerEvents: isEnd?'none':''}" v-model="displayMode" @change="changeDisplayMode"
-                        size="small">
+        <el-radio-group :style="{pointerEvents: isEnd?'none':''}" v-model="displayMode" @change="changeDisplayMode" size="small">
           <el-radio-button v-for="item in displayModes" :key="item" :label="item"></el-radio-button>
         </el-radio-group>
       </div>
+      <div v-if="typeRange.includes('汉字')">
+        <label>选择汉字阶段</label>
+        <div>
+          <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="hanZiRange" @change="changeHanZiRange" size="small">
+            <el-checkbox-button v-for="(item,index) in passHanZi" :key="item" :label="`第${index+1}阶段`"></el-checkbox-button>
+          </el-checkbox-group>
+        </div>
+      </div>
+
     </form>
     <hr class="my-3">
     <section class="text-center mb-2 position-relative">
@@ -22,7 +29,7 @@
         <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)"
              :class="isChecked && index === +resultIndex?('correct '+currentAnimation):'' ">{{item}}
         </div>
-     </div>
+      </div>
       <ok-pic :okPicRate="okPicRate" :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
     </section>
     <audio id="pippaPig" preload autoplay src="music/PeppaPig.mp3" controls v-if="isEnd"></audio>
@@ -45,8 +52,8 @@
           </ul>
         </el-collapse-item>
         <el-collapse-item class="tip-hanzi" title="学过的汉字" v-if="typeRange.includes('汉字')" type="success">
-          <span v-for="(item,index) in this.passHanZi"><b>{{item}}</b></span>
-          <br>共{{ this.passHanZi[0].length}}个
+          <span v-for="(item,index) in this.passHanZi"><b>{{item+'\n'}}</b></span>
+          <br>共{{ this.passHanZi.join('').length}}个
         </el-collapse-item>
       </el-collapse>
       <el-alert class="mt-2" title="注意：键盘输入不支持一些中文标点和数学符号，比如“：× ÷ ， 。 ：”" type="warning"></el-alert>
@@ -65,14 +72,14 @@
 </template>
 
 <script>
-  import Bus from "../middleware/BusEvent";
-  import MyProgress from '../components/Progress'
-  import OkPic from '../components/OkPic'
+  import Bus from '../middleware/BusEvent';
+  import MyProgress from '../components/Progress';
+  import OkPic from '../components/OkPic';
 
   const animationRate = .63; // 选中后数字出现动画的概率
 
   export default {
-    name: "MainBox",
+    name: 'MainBox',
     data() {
       return {
         // changeTypeChecked:false,
@@ -92,6 +99,7 @@
         typeRanges: ['数字', '大写字母', '小写字母', '符号', '汉字'],
         displayMode: '2x2',
         displayModes: ['2x2', '3x2'],
+        // hanZiRanges: ['2x2', '3x2'],
         result: '',
         resultIndex: 0,
         numbers: '0123456789',
@@ -100,37 +108,42 @@
         operateCharArray: [['`', '反引号'], ['~', '波浪号'], ['!', ''], ['@', '同单词at'], ['#', ''], ['$', '同单词dollar'], ['%', ''], ['^', '尖角号'], ['&', '同单词and'], ['*', ''], ['\\', '反斜杠'], ['/', '斜杠'], ['(', '左小括号或左圆括号'], [')', ''], ['[', '左中括号或左方括号'], [']', ''], ['{', ''], ['}', '右大括号或右花括号'], ['<', ''], ['>', '大于号或右尖括号'], ['_', '下划线'], ['|', '竖杠或管道符'], [',', ''], ['.', '小数点或英文句号'], [';', ''], ['?', ''], [':', ''], ['\'', '单引号'], ['\"', '双引号'], ['+', ''], ['-', ''], ['×', ''], ['÷', ''], ['=', ''], ['。', ''], ['《', '左书名号'], ['》', '']],
         operateChar: '',
         passOperateChar: '',
+        hanZiRange: ['第1阶段'], // 元素必须是字符串，数字不行
         hanZi: '',
-        passHanZi: ['一二三四五六七八九十人口手上中下大小不对子了月水火海头眼耳鼻舌牙脚地鸡蛋爸妈爷奶姥打牛车太阳阿洛吃喝来' +
-        '饭米面饼干渣馒碗杯勺' +
-        '穿脱衣服裤袜鞋帽肚嘴' +
-        '床搂瞌睡梦醒抱熊尿纸' +
-        '咸瓶看见书桌板凳佩奇' +
-        '走跑跳路轮扔哭几岁宝'],
+        passHanZi: ['一二三四五六七八九十' +
+        '人口手上中下大小不对' +
+        '子了月水火海头眼耳鼻' +
+        '舌牙脚地鸡蛋爸妈爷奶' +
+        '姥打牛车太阳阿洛吃喝来',
+          '饭米面饼干渣馒碗杯勺' +
+          '穿脱衣服裤袜鞋帽肚嘴' +
+          '床搂瞌睡梦醒抱熊尿纸' +
+          '咸瓶看见书桌板凳佩奇' +
+          '走跑跳路轮扔哭几岁宝'],
         fillStr: [],
         counter: 1,
         goodWidth: 'w-50',
         animations: ['rollIn', 'bounceInDown', 'bounceInLeft', 'bounceInUp', 'bounceInRight', 'flip', 'flipInY', 'rotateIn',
-          'bounce', 'rubberBand', 'swing','pulse','shake','tada','wobble','jello','heartBeat'],
-        currentAnimation:'bounceIn',
+          'bounce', 'rubberBand', 'swing', 'pulse', 'shake', 'tada', 'wobble', 'jello', 'heartBeat'],
+        currentAnimation: 'bounceIn',
         isEnd: false
-      }
+      };
     },
     computed: {
       blockNum: function () {
         switch (this.displayMode) {
-          case "2x2":
+          case '2x2':
             return 4;
-          case "3x2":
+          case '3x2':
             return 6;
           default:
-            return 4
+            return 4;
         }
       }
     },
     methods: {
       playAgain() {
-        location.reload()
+        location.reload();
       },
       generateLetters() { // 大写字母的ASC2码是65~90
         let arr = '';
@@ -142,11 +155,11 @@
       changeTypeChecked(e) {
         if (e.target.innerHTML === '汉字') {
           this.typeRange = ['汉字'];
-          this.changeTypeRange() // 点击汉字按钮没有触发group的change事件
+          this.changeTypeRange(); // 点击汉字按钮没有触发group的change事件
         } else {
           let index = this.typeRange.indexOf('汉字');
           if (index >= 0) {
-            this.typeRange.splice(index, 1)
+            this.typeRange.splice(index, 1);
           }
         }
       },
@@ -156,6 +169,10 @@
       },
       changeDisplayMode() {
         localStorage.displayMode = this.displayMode;
+        this.shuffle();
+      },
+      changeHanZiRange(){
+        localStorage.hanZiRange = this.hanZiRange;
 
         this.shuffle();
       },
@@ -169,8 +186,9 @@
         this.boxActive = -1;
         let charRange = '';
         this.typeRange.forEach((item) => {
+          debugger;
           switch (item) {
-            case "数字":
+            case '数字':
               charRange += this.numbers;
               break;
             case '大写字母':
@@ -183,7 +201,11 @@
               charRange += this.passOperateChar;
               break;
             case '汉字':
-              charRange += this.passHanZi;
+              charRange += this.hanZiRange.map(item0=>{
+                console.log({item0})
+               return  this.passHanZi[item0.slice(1,2)-1];
+              }).join('');
+
               break;
           }
         });
@@ -203,7 +225,7 @@
         //splice方法的第一个参数指对应的下标之前，如果数值很大超过了数组长度，则位置定在数组最后
         // 所以this.resultIndex在0~n的位置对应n个tempArr字符的n+1个空隙中
         this.fillStr = (tempArr.slice(0, this.resultIndex) + this.result + tempArr.slice(this.resultIndex)).split('');
-        Bus.$emit('setResult', this.result)
+        Bus.$emit('setResult', this.result);
       },
       next() {
         if (++this.counter > this.limitNum) {
@@ -217,13 +239,13 @@
         }
       },
       keyDownBlock(e) {
-        console.log(e)
+        console.log(e);
       },
       clickBlock(index) {
         this.currentAnimation = this.getCorrectAnimation();
         const checkRight = () => {
           setTimeout(() => {
-            this.showOkPic = true
+            this.showOkPic = true;
           }, 400);
           // this.blankPic = false;
           this.isChecked = true;
@@ -233,7 +255,7 @@
 
         };
         if (index === +this.resultIndex) {
-          checkRight()
+          checkRight();
         }
       },
       getCorrectAnimation() {
@@ -248,7 +270,7 @@
       this.operateChar = this.operateCharArray.map(item => item[0]).join('');
       this.passOperateChar = this.operateChar;
       window.onkeydown = (e) => {
-        this.clickBlock(this.fillStr.indexOf(e.key))
+        this.clickBlock(this.fillStr.indexOf(e.key));
       };
       // debugger;
       this.typeRange = JSON.parse(localStorage.typeRange || null) || this.typeRange;
@@ -264,7 +286,7 @@
       MyProgress,
       OkPic
     }
-  }
+  };
 </script>
 
 <style lang="scss">
