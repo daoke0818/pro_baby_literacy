@@ -15,7 +15,7 @@
       <div v-if="typeRange.includes('汉字')">
         <label>选择汉字阶段</label>
         <div>
-          <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="hanZiRange" @change="changeHanZiRange" size="small">
+          <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="hanZiRange" @change="changeHanZiRange" size="small" :min="1">
             <el-checkbox-button v-for="(item,index) in passHanZi" :key="item" :label="`第${index+1}阶段`"></el-checkbox-button>
           </el-checkbox-group>
         </div>
@@ -56,7 +56,7 @@
           <br>共{{ this.passHanZi.join('').length}}个
         </el-collapse-item>
       </el-collapse>
-      <el-alert class="mt-2" title="注意：键盘输入不支持一些中文标点和数学符号，比如“：× ÷ ， 。 ：”" type="warning"></el-alert>
+      <el-alert class="mt-2" title="注意：键盘输入不支持汉字、中文标点和一些数学符号，比如：“× ÷ ， 。 ：”" type="warning"></el-alert>
       <div class="mt-2">
         <p>网址<a href="http://e-art.top/projects/baby_literacy/"> http://e-art.top/projects/baby_literacy/</a>，欢迎大家分享。</p>
         <p>可以将网址添加到微信浮窗，方便随时使用。</p>
@@ -76,13 +76,12 @@
   import MyProgress from '../components/Progress';
   import OkPic from '../components/OkPic';
 
-  const animationRate = .63; // 选中后数字出现动画的概率
+  const animationRate = .63; // 选对后方块出现动画的概率
 
   export default {
     name: 'MainBox',
     data() {
       return {
-        // changeTypeChecked:false,
         okPicRate: .1, // 选中后图片出现的概率
         isChecked: false,
         limitNum: 15,
@@ -172,7 +171,7 @@
         this.shuffle();
       },
       changeHanZiRange(){
-        localStorage.hanZiRange = this.hanZiRange;
+        localStorage.hanZiRange = JSON.stringify(this.hanZiRange);
 
         this.shuffle();
       },
@@ -186,7 +185,6 @@
         this.boxActive = -1;
         let charRange = '';
         this.typeRange.forEach((item) => {
-          debugger;
           switch (item) {
             case '数字':
               charRange += this.numbers;
@@ -272,8 +270,8 @@
       window.onkeydown = (e) => {
         this.clickBlock(this.fillStr.indexOf(e.key));
       };
-      // debugger;
       this.typeRange = JSON.parse(localStorage.typeRange || null) || this.typeRange;
+      this.hanZiRange = JSON.parse(localStorage.hanZiRange || null) || this.hanZiRange;
       this.displayMode = localStorage.displayMode || this.displayMode;
     },
     mounted() {
