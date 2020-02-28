@@ -57,13 +57,13 @@
         </el-collapse-item>
       </el-collapse>
       <el-alert class="mt-2" title="注意：键盘输入不支持汉字、中文标点和一些数学符号，比如：“× ÷ ， 。 ：”" type="warning"></el-alert>
-      <div class="mt-2">
-        <p>网址<a href="http://e-art.top/projects/baby_literacy/"> http://e-art.top/projects/baby_literacy/</a>，欢迎大家分享。</p>
-        <p>可以将网址添加到微信浮窗，方便随时使用。</p>
-        <p>如果父母们有好的想法可以到QQ群讨论，群号 1056477760，也可扫描下方二维码加入：</p>
-        <p class="mt-3 text-center"><img src="img/p_aLuoShiZi_qqQun.png" alt=""></p>
+     </div>
+    <div class="mt-2 about">
+      <p>网址<a href="http://e-art.top/projects/baby_literacy/"> http://e-art.top/projects/baby_literacy/</a>，欢迎大家分享。</p>
+      <p>可以将网址添加到微信浮窗，方便随时使用。</p>
+      <p>如果父母们有好的想法可以加QQ群1056477760，或扫描下方二维码加入微信群：</p>
+      <p class="mt-3 text-center"><img class="qrCode" src="img/p_aLuoShiZi_weixinQun.png" alt=""></p>
 
-      </div>
     </div>
 
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
@@ -369,6 +369,12 @@
         display: inline-block;
         width: 1rem;
       }
+    }
+
+  }
+  .about{
+    .qrCode{
+      width: 18rem;
     }
   }
 
