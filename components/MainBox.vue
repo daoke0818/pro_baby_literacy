@@ -15,8 +15,9 @@
       <div v-if="typeRange.includes('汉字')">
         <label>选择汉字阶段</label>
         <div>
-          <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="hanZiRange" @change="changeHanZiRange" size="small" :min="1">
-            <el-checkbox-button v-for="(item,index) in passHanZi" :key="item" :label="`第${index+1}阶段`"></el-checkbox-button>
+          <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="hanZiRange" @change="changeHanZiRange" size="small"
+                             :min="1">
+            <el-checkbox-button v-for="(item,index) in passHanZi" :key="item+index" :label="`${index+1}阶段`"></el-checkbox-button>
           </el-checkbox-group>
         </div>
       </div>
@@ -26,7 +27,7 @@
     <section class="text-center mb-2 position-relative">
       <p class="mb-2">请点选答案方格</p>
       <div :class="['box-wrap d-flex flex-wrap', displayMode==='2x2'?'w2h2':'w3h2']">
-        <div v-for="(item,index) in fillStr" :key="item" @click="clickBlock(index)"
+        <div v-for="(item,index) in fillStr" :key="item+index" @click="clickBlock(index)"
              :class="isChecked && index === +resultIndex?('correct '+currentAnimation):'' ">{{item}}
         </div>
       </div>
@@ -51,19 +52,24 @@
             <li v-for="(item,index) in this.operateCharArray" v-if="item[1]"><b>{{item[0]}}</b>：{{item[1]}}</li>
           </ul>
         </el-collapse-item>
-        <el-collapse-item class="tip-hanzi" title="学过的汉字" v-if="typeRange.includes('汉字')" type="success">
+        <el-collapse-item class="tip-hanzi" title="汉字列表" v-if="typeRange.includes('汉字')" type="success">
           <span v-for="(item,index) in this.passHanZi"><b>{{item+'\n'}}</b></span>
           <br>共{{ this.passHanZi.join('').length}}个
         </el-collapse-item>
       </el-collapse>
       <el-alert class="mt-2" title="注意：键盘输入不支持汉字、中文标点和一些数学符号，比如：“× ÷ ， 。 ：”" type="warning"></el-alert>
-     </div>
-    <div class="mt-2 about">
-      <p>网址<a href="http://e-art.top/projects/baby_literacy/"> http://e-art.top/projects/baby_literacy/</a>，欢迎大家分享。</p>
-      <p>可以将网址添加到微信浮窗，方便随时使用。</p>
-      <p>如果父母们有好的想法可以加QQ群1056477760，或扫描下方二维码加入微信群：</p>
-      <p class="mt-3 text-center"><img class="qrCode" src="img/p_aLuoShiZi_weixinQun.png" alt=""></p>
+    </div>
+    <div class="mt-2 about p-3">
+      <h3 class="text-center mb-3">说明</h3>
+      <p class="">欢迎大家来到阿洛识字！
+        <p>阿洛识字是一款免费的幼儿识字工具，简单易用，动画丰富，让宝宝在玩的过程中就能学会很多文字。此工具无需安装app，只要打开一个链接，就能打开宝宝认字的世界。
+      可以将网址添加到微信浮窗，方便随时使用。
+        链接地址
+        <el-link type="danger" href="http://e-art.top/aluoshizi/"> http://e-art.top/aluoshizi/</el-link>
 
+      <p class="">本工具是作者根据自己孩子的成长状态开发的，目前比较适合一岁半到三四岁的宝宝，当然为了让更多孩子能使用到，以后将逐步完善功能，增加大龄幼儿的兴趣点。</p>
+      <p class="">如果父母们有好的想法可以加QQ群1056477760，或扫描下方二维码加入微信群一起交流：
+      <p class="qrCode text-center mt-4"><img src="http://e-art.top/Img/QR_weixin.png" alt="微信二维码"></p>
     </div>
 
     <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
@@ -107,7 +113,7 @@
         operateCharArray: [['`', '反引号'], ['~', '波浪号'], ['!', ''], ['@', '同单词at'], ['#', ''], ['$', '同单词dollar'], ['%', ''], ['^', '尖角号'], ['&', '同单词and'], ['*', ''], ['\\', '反斜杠'], ['/', '斜杠'], ['(', '左小括号或左圆括号'], [')', ''], ['[', '左中括号或左方括号'], [']', ''], ['{', ''], ['}', '右大括号或右花括号'], ['<', ''], ['>', '大于号或右尖括号'], ['_', '下划线'], ['|', '竖杠或管道符'], [',', ''], ['.', '小数点或英文句号'], [';', ''], ['?', ''], [':', ''], ['\'', '单引号'], ['\"', '双引号'], ['+', ''], ['-', ''], ['×', ''], ['÷', ''], ['=', ''], ['。', ''], ['《', '左书名号'], ['》', '']],
         operateChar: '',
         passOperateChar: '',
-        hanZiRange: ['第1阶段'], // 元素必须是字符串，数字不行
+        hanZiRange: ['1阶段'], // 元素必须是字符串，数字不行
         hanZi: '',
         passHanZi: ['一二三四五六七八九十' +
         '人口手上中下大小不对' +
@@ -170,7 +176,7 @@
         localStorage.displayMode = this.displayMode;
         this.shuffle();
       },
-      changeHanZiRange(){
+      changeHanZiRange() {
         localStorage.hanZiRange = JSON.stringify(this.hanZiRange);
 
         this.shuffle();
@@ -199,9 +205,9 @@
               charRange += this.passOperateChar;
               break;
             case '汉字':
-              charRange += this.hanZiRange.map(item0=>{
-                console.log({item0})
-               return  this.passHanZi[item0.slice(1,2)-1];
+              charRange += this.hanZiRange.map(item0 => {
+                console.log({item0});
+                return this.passHanZi[item0.slice(0, 1) - 1];
               }).join('');
 
               break;
@@ -372,9 +378,18 @@
     }
 
   }
-  .about{
-    .qrCode{
+
+  .about {
+    background: white;
+
+    p{
+      margin-bottom: .75rem;
+    }
+    .qrCode img {
+      margin: 0 auto;
       width: 18rem;
+      border: .0625rem solid lightskyblue;
+      border-radius: .5rem;
     }
   }
 
