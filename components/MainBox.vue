@@ -1,27 +1,21 @@
 <template>
   <div>
     <form>
-      <label>请选择练习范围</label>
+      <label class="d-block">请选择练习范围</label>
       <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="typeRange" @change="changeTypeRange" size="small" :min="1">
         <el-checkbox-button class="testScope" v-for="(item,index) in typeRanges" :key="item+index" :label="item"
                             @click.native="changeTypeChecked"></el-checkbox-button>
       </el-checkbox-group>
-      <label>请选择显示模式</label>
-      <div>
-        <el-radio-group :style="{pointerEvents: isEnd?'none':''}" v-model="displayMode" @change="changeDisplayMode" size="small">
-          <el-radio-button v-for="item in displayModes" :key="item" :label="item"></el-radio-button>
-        </el-radio-group>
-      </div>
+      <label class="d-block">请选择显示模式</label>
+      <el-radio-group :style="{pointerEvents: isEnd?'none':''}" v-model="displayMode" @change="changeDisplayMode" size="small">
+        <el-radio-button v-for="item in displayModes" :key="item" :label="item"></el-radio-button>
+      </el-radio-group>
+      <label class="d-block">选择汉字阶段</label>
       <div v-if="typeRange.includes('汉字')">
-        <label>选择汉字阶段</label>
-        <div>
-          <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="hanZiRange" @change="changeHanZiRange" size="small"
-                             :min="1">
-            <el-checkbox-button v-for="(item,index) in passHanZi" :key="item+index" :label="`${index+1}阶段`"></el-checkbox-button>
-          </el-checkbox-group>
-        </div>
+        <el-checkbox-group :style="{pointerEvents: isEnd?'none':''}" v-model="hanZiRange" @change="changeHanZiRange" size="small" :min="1">
+          <el-checkbox-button v-for="(item,index) in passHanZi" :key="item+index" :label="`${index+1}阶段`"></el-checkbox-button>
+        </el-checkbox-group>
       </div>
-
     </form>
     <hr class="my-3">
     <section class="text-center mb-2 position-relative">
@@ -53,7 +47,7 @@
           </ul>
         </el-collapse-item>
         <el-collapse-item class="tip-hanzi" title="汉字列表" v-if="typeRange.includes('汉字')" type="success">
-          <span v-for="(item,index) in this.passHanZi"><b>{{item+'\n'}}</b></span>
+          <span class="d-inline-block my-2" v-for="(item,index) in this.passHanZi"><b>{{item+'\n'}}</b></span>
           <br>共{{ this.passHanZi.join('').length}}个
         </el-collapse-item>
       </el-collapse>
@@ -62,8 +56,8 @@
     <div class="mt-2 about p-3">
       <h3 class="text-center mb-3">说明</h3>
       <p class="">欢迎大家来到阿洛识字！
-        <p>阿洛识字是一款免费的幼儿识字工具，简单易用，动画丰富，让宝宝在玩的过程中就能学会很多文字。此工具无需安装app，只要打开一个链接，就能打开宝宝认字的世界。
-      可以将网址添加到微信浮窗，方便随时使用。
+      <p>阿洛识字是一款免费的幼儿识字工具，简单易用，动画丰富，让宝宝在玩的过程中就能学会很多文字。此工具无需安装app，只要打开一个链接，就能打开宝宝认字的世界。
+        可以将网址添加到微信浮窗，方便随时使用。
         链接地址
         <el-link type="danger" href="http://e-art.top/aluoshizi/"> http://e-art.top/aluoshizi/</el-link>
 
@@ -83,6 +77,7 @@
   import OkPic from '../components/OkPic';
 
   const animationRate = .63; // 选对后方块出现动画的概率
+  const loacalStorageSign = '2020-3-8 15:00:38';
 
   export default {
     name: 'MainBox',
@@ -100,7 +95,7 @@
         timer: '',
         thumbAttr: '',
         boxActive: -1,
-        typeRange: ['符号'],
+        typeRange: ['数字', '大写字母', '小写字母'],
         typeRanges: ['数字', '大写字母', '小写字母', '符号', '汉字'],
         displayMode: '2x2',
         displayModes: ['2x2', '3x2'],
@@ -147,6 +142,12 @@
       }
     },
     methods: {
+      cleanLocalStorage(name){
+        if(localStorage.sign!==loacalStorageSign){
+          localStorage.setItem(name,'');
+          localStorage.sign = loacalStorageSign;
+        }
+      },
       playAgain() {
         location.reload();
       },
@@ -269,6 +270,7 @@
       }
     },
     created() {
+      this.cleanLocalStorage('hanZiRange');
       this.lowerLetters = this.generateLetters().toLocaleLowerCase();
       this.upperLetters = this.generateLetters();
       this.operateChar = this.operateCharArray.map(item => item[0]).join('');
@@ -307,6 +309,8 @@
   .box-wrap {
     text-align: center;
     box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, .33);
+    /*font-family: cursive, serif;*/
+    font-family: "\5B8B\4F53"
   }
 
   .box-wrap > div {
@@ -382,9 +386,10 @@
   .about {
     background: white;
 
-    p{
+    p {
       margin-bottom: .75rem;
     }
+
     .qrCode img {
       margin: 0 auto;
       width: 18rem;
