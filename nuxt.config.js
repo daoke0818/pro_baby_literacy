@@ -17,7 +17,8 @@ export default {
       {hid: 'description', name: 'description', content: process.env.npm_package_description || ''}
     ],
     link: [
-      {rel: 'icon', type: 'image/x-icon', href: 'favicon.ico'}
+      {rel: 'icon', type: 'image/x-icon', href: 'favicon.ico'},
+      {rel: 'stylesheet', href: '//at.alicdn.com/t/font_2308499_jhcmhop7gvs.css'}
     ]
   },
   /*
@@ -30,7 +31,8 @@ export default {
   css: [
     '@/assets/css/fromBootstrap.css',
     'element-ui/lib/theme-chalk/index.css',
-    'animate.css'
+    'animate.css',
+    // 'http://at.alicdn.com/t/font_2308499_jhcmhop7gvs.css'
   ],
   /*
   ** Plugins to load before mounting the App

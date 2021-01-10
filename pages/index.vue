@@ -4,11 +4,17 @@
       <my-header/>
     </el-header>
     <el-main>
-      <main-box/>
+      <main-box :typeRanges_show="typeRanges_show"/>
     </el-main>
     <el-footer>
       <my-footer></my-footer>
     </el-footer>
+    <el-drawer
+      title="设置"
+      size="70%"
+      :visible.sync="drawer">
+      <Settings :typeRanges_show="typeRanges_show"/>
+    </el-drawer>
   </el-container>
 </template>
 
@@ -18,18 +24,42 @@
   import MainBox from "../components/MainBox";
   import common from "../assets/js/common";
   import MyFooter from "../components/MyFooter";
+  import Bus from "../middleware/BusEvent";
+  import Settings from "../components/Settings";
+  import {typeRanges} from "../configData/allDatas";
 
   export default {
     components: {
       MainBox,
       MyHeader,
-      MyFooter
+      MyFooter,
+      Settings
     },
-    data() {
-      return {}
+    beforeCreate() {
+      Bus.$on('openDraw', (result) => {
+        this.drawer = result
+      });
+      Bus.$on('setTypeRange', typeRanges => {
+        this.typeRanges_show = typeRanges
+        localStorage.setItem('typeRanges_show',JSON.stringify(this.typeRanges_show) )
+      })
+    },
+    created() {
+      this.typeRanges_show = JSON.parse( localStorage.getItem('typeRanges_show')||null) || typeRanges
 
     },
-    methods: {},
+    beforeDestroy() {
+      Bus.$off('openDraw')
+    },
+    data() {
+      return {
+        drawer:false,
+        typeRanges_show:[]
+      }
+
+    },
+    methods: {
+    },
     mounted() {
     }
   }
