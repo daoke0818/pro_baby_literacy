@@ -75,19 +75,20 @@
 import Bus from '../middleware/BusEvent';
 import MyProgress from '../components/Progress';
 import OkPic from '../components/OkPic';
-import {passHanZi, operateCharArray,lowerLetters,upperLetters,numbers,animations} from '../configData/allDatas'
+import {passHanZi, operateCharArray, lowerLetters, upperLetters, numbers, animations,okSounds} from '../configData/allDatas'
 
 const animationRate = .63; // 选对后方块出现动画的概率
 const loacalStorageSign = '2020-3-8 15:00:38';
 
 export default {
   name: 'MainBox',
-  props:{
+  props: {
     typeRanges_show: [],
   },
   data() {
     return {
       okPicRate: .1, // 选中后图片出现的概率
+      okSoundRate:.5,
       isChecked: false,
       limitNum: 15,
       showOkPic: false,
@@ -236,8 +237,13 @@ export default {
         // this.blankPic = false;
         this.isChecked = true;
         this.$sound_correct.pause();
+        if(Math.random()<this.okSoundRate){
+          this.$sound_correct.src="sound/"+okSounds.rdm()
+        }else{
+          this.$sound_correct.src="sound/tada.wav"
+        }
         this.$sound_correct.play();
-        this.timer = setTimeout(this.next, this.blankPic ? 1000 : 2500);
+        this.timer = setTimeout(this.next, this.blankPic ? 1500 : 2500);
 
       };
       if (index === +this.resultIndex) {
@@ -251,7 +257,6 @@ export default {
     }
   },
   created() {
-    console.log('~~typeRanges_show',this.typeRanges_show)
     this.cleanLocalStorage('hanZiRange');
     this.operateChar = operateCharArray.map(item => item[0]).join('');
     this.passOperateChar = this.operateChar;
@@ -277,14 +282,22 @@ export default {
 <style lang="scss">
 
 .el-checkbox-button.is-disabled .el-checkbox-button__inner {
-color: #000;
-border-color: var(--c-brand) !important;
-background: var(--c-brand) !important;
+  color: #000;
+  border-color: var(--c-brand) !important;
+  background: var(--c-brand) !important;
 }
+
 .el-collapse-item [role=tab] [role=button] {
   padding-left: .5rem;
 }
+
+.el-alert {
+  .el-alert__content {
+    padding-left: 0;
+  }
+}
 </style>
+
 <style lang="scss" scoped>
 .el-checkbox-group, .el-radio-group {
   margin: .25rem 0 .5rem;
@@ -379,10 +392,6 @@ background: var(--c-brand) !important;
     border-radius: .5rem;
   }
 }
-.el-alert{
-  .el-alert__content{
-    padding-left: 0;
-  }
-}
+
 </style>
 

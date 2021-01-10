@@ -63,13 +63,14 @@ export default {
   }
 
   img {
-    width: 3rem;
+    height: 1.5rem;
   }
 
   .r {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-right: .5rem;
 
     .iconfont {
       line-height: 1.25rem;

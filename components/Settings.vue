@@ -1,6 +1,13 @@
 <template>
   <el-form ref="form">
-  <el-form-item label="练习范围">
+    <el-form-item v-if="!showSettings">
+      <el-input placeholder="密码:15863037787" v-model="password" class="input-with-select">
+        <el-button slot="append" @click="checkPassword">确定</el-button>
+      </el-input>
+<!--      <el-input v-model="password" />-->
+<!--      <el-button @click="checkPassword">确定</el-button>-->
+    </el-form-item>
+  <el-form-item label="练习范围" v-if="showSettings">
     <el-checkbox-group v-model="typeRanges_show" @change="onChange" :min="1">
       <el-checkbox v-for="item in typeRanges" :label='item'/>
     </el-checkbox-group>
@@ -18,12 +25,19 @@ export default {
   },
   data() {
     return {
-      typeRanges
+      typeRanges,
+      password:'',
+      showSettings:false
     }
   },
   methods:{
     onChange(){
       Bus.$emit('setTypeRange',this.typeRanges_show)
+    },
+    checkPassword(){
+      if(this.password==='15863037787'){
+        this.showSettings = true
+      }
     }
   }
 

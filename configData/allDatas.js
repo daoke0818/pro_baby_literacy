@@ -9,7 +9,7 @@ const generateLetters = () => { // 大写字母的ASC2码是65~90
 export const
   lowerLetters = generateLetters().toLocaleLowerCase(),
   upperLetters = generateLetters(),
-  numbers= '0123456789',
+  numbers = '0123456789',
   typeRanges = ['数字', '大写字母', '小写字母', '符号', '汉字'],
   operateCharArray = [
     ['`', '反引号'],
@@ -67,4 +67,6 @@ export const
     '风雨雷电雪花草球单杠'
   ],
   animations = ['rollIn', 'bounceInDown', 'bounceInLeft', 'bounceInUp', 'bounceInRight', 'flip', 'flipInY', 'rotateIn',
-    'bounce', 'rubberBand', 'swing', 'pulse', 'shake', 'tada', 'wobble', 'jello', 'heartBeat'];
+    'bounce', 'rubberBand', 'swing', 'pulse', 'shake', 'tada', 'wobble', 'jello', 'heartBeat'],
+  okSounds = ['ok_aluo', 'ok_father01', 'ok_father02', 'ok_father03', 'ok_laolao01', 'ok_laolao02', 'ok_laolao03', 'ok_laolao04',
+    'ok_mother01', 'ok_mother02'].map(item => item + '.mp3');
