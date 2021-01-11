@@ -66,8 +66,8 @@
       <p class="qrCode text-center mt-4"><img src="http://e-art.top/Img/QR_weixin.png" alt="微信二维码"></p>
     </div>
 
-    <audio id="sound_correct" hidden="" src="sound/tada.wav"></audio>
-    <audio id="sound_next" hidden="" src="sound/next.wav"></audio>
+    <audio id="sound_correct" hidden="" src="sound/tada.mp3"></audio>
+    <audio id="sound_next" hidden="" src="sound/next.mp3"></audio>
   </div>
 </template>
 
@@ -75,7 +75,7 @@
 import Bus from '../middleware/BusEvent';
 import MyProgress from '../components/Progress';
 import OkPic from '../components/OkPic';
-import {passHanZi, operateCharArray, lowerLetters, upperLetters, numbers, animations,okSounds} from '../configData/allDatas'
+import {passHanZi, operateCharArray, lowerLetters, upperLetters, numbers, animations, okSounds} from '../configData/allDatas'
 
 const animationRate = .63; // 选对后方块出现动画的概率
 const loacalStorageSign = '2020-3-8 15:00:38';
@@ -87,8 +87,8 @@ export default {
   },
   data() {
     return {
-      okPicRate: .1, // 选中后图片出现的概率
-      okSoundRate:.5,
+      okPicRate: .2, // 选中后图片出现的概率
+      okSoundRate: .5,
       isChecked: false,
       limitNum: 15,
       showOkPic: false,
@@ -99,7 +99,7 @@ export default {
       timer: '',
       thumbAttr: '',
       boxActive: -1,
-      typeRange: ['数字', '大写字母', '小写字母'],
+      typeRange: [],
       operateCharArray,
       displayMode: '2x2',
       displayModes: ['2x2', '3x2'],
@@ -116,6 +116,16 @@ export default {
       currentAnimation: 'bounceIn',
       isEnd: false
     };
+  },
+  watch: {
+    typeRanges_show: function () {
+      // console.log('~~this.typeRange',this.typeRange)
+      this.typeRange = this.typeRanges_show.filter(item => this.typeRange.includes(item))
+      if (!this.typeRange.length) {
+        this.typeRange = [this.typeRanges_show[0]]
+      }
+      this.changeTypeRange();
+    }
   },
   computed: {
     blockNum: function () {
@@ -237,10 +247,10 @@ export default {
         // this.blankPic = false;
         this.isChecked = true;
         this.$sound_correct.pause();
-        if(Math.random()<this.okSoundRate){
-          this.$sound_correct.src="sound/"+okSounds.rdm()
-        }else{
-          this.$sound_correct.src="sound/tada.wav"
+        if (Math.random() < this.okSoundRate) {
+          this.$sound_correct.src = "sound/" + okSounds.rdm()
+        } else {
+          this.$sound_correct.src = "sound/tada.mp3"
         }
         this.$sound_correct.play();
         this.timer = setTimeout(this.next, this.blankPic ? 1500 : 2500);
@@ -263,7 +273,8 @@ export default {
     window.onkeydown = (e) => {
       this.clickBlock(this.fillStr.indexOf(e.key));
     };
-    this.typeRange = JSON.parse(localStorage.typeRange || null) || this.typeRange;
+    const localTypeRange = JSON.parse(localStorage.typeRange || null)
+    this.typeRange = localTypeRange && localTypeRange.length > 0 ? localTypeRange : [this.typeRanges_show[0]];
     this.hanZiRange = JSON.parse(localStorage.hanZiRange || null) || this.hanZiRange;
     this.displayMode = localStorage.displayMode || this.displayMode;
   },

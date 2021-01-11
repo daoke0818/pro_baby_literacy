@@ -1,7 +1,7 @@
 <template>
   <el-form ref="form">
     <el-form-item v-if="!showSettings">
-      <el-input placeholder="密码:15863037787" v-model="password" class="input-with-select">
+      <el-input placeholder="请输入:15863037787" v-model="password" class="input-with-select">
         <el-button slot="append" @click="checkPassword">确定</el-button>
       </el-input>
 <!--      <el-input v-model="password" />-->

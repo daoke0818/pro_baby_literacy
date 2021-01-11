@@ -68,5 +68,5 @@ export const
   ],
   animations = ['rollIn', 'bounceInDown', 'bounceInLeft', 'bounceInUp', 'bounceInRight', 'flip', 'flipInY', 'rotateIn',
     'bounce', 'rubberBand', 'swing', 'pulse', 'shake', 'tada', 'wobble', 'jello', 'heartBeat'],
-  okSounds = ['ok_aluo', 'ok_father01', 'ok_father02', 'ok_father03', 'ok_laolao01', 'ok_laolao02', 'ok_laolao03', 'ok_laolao04',
-    'ok_mother01', 'ok_mother02'].map(item => item + '.mp3');
+  okSounds = ['ok_aluo', 'ok_father01', 'ok_father02', 'ok_father03', 'ok_father04', 'ok_father05', 'ok_laolao01', 'ok_laolao02',
+    'ok_laolao03', 'ok_laolao04', 'ok_mother01', 'ok_mother02'].map(item => item + '.mp3');
