@@ -78,12 +78,14 @@
       height:44px!important;
     }
     .el-main{
-      position:relative
+        position:relative;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
   }
 
-  @media (min-width: 480px) {
+  // @media (min-width: 480px) {
     body{
       background: initial;
     }
@@ -103,5 +105,5 @@
         position: absolute;
       }
     }
-  }
+  // }
 </style>

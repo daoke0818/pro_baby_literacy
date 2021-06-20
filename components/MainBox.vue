@@ -128,7 +128,9 @@ export default {
       this.changeTypeRange();
     },
     isEnd:function(){
-      document.querySelector('.el-main').style.overflow = 'hidden'
+      const elMain = document.querySelector('.el-main')
+      elMain.scrollTo(0,0)
+      elMain.style.overflow = 'hidden'
     }
 
   },
