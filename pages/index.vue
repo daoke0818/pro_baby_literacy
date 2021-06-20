@@ -46,7 +46,6 @@
     },
     created() {
       this.typeRanges_show = JSON.parse( localStorage.getItem('typeRanges_show')||null) || typeRanges
-
     },
     beforeDestroy() {
       Bus.$off('openDraw')
@@ -56,12 +55,8 @@
         drawer:false,
         typeRanges_show:[]
       }
-
     },
-    methods: {
-    },
-    mounted() {
-    }
+   
   }
 </script>
 
@@ -76,8 +71,14 @@
     }
 
     .el-header, .el-footer {
-      height: auto;
+      // height: auto;
       padding: 0;
+    }
+    .el-header{
+      height:44px!important;
+    }
+    .el-main{
+      position:relative
     }
 
   }

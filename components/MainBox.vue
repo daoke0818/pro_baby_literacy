@@ -25,9 +25,8 @@
              :class="isChecked && index === +resultIndex?('correct '+currentAnimation):'' ">{{ item }}
         </div>
       </div>
-      <ok-pic :okPicRate="okPicRate" :now="counter" :limitNum="limitNum" v-show="showOkPic" @setBlankPic="setBlankPic"/>
+      <ok-pic :okPicRate="okPicRate" :now="counter" :limitNum="limitNum" v-show="showOkPic&&!isEnd" @setBlankPic="setBlankPic"/>
     </section>
-    <audio id="pippaPig" preload autoplay src="music/PeppaPig.mp3" controls v-if="isEnd"></audio>
     <MyProgress :total="limitNum" :now="counter"/>
     <p v-if="counter<=limitNum">第
       <output id="counter" class="font-weight-bold">{{ counter }}</output>
@@ -65,6 +64,7 @@
       <p class="">如果父母们有好的想法可以加QQ群1056477760，或扫描下方二维码加入微信群一起交流：
       <p class="qrCode text-center mt-4"><img src="http://e-art.top/Img/QR_weixin.png" alt="微信二维码"></p>
     </div>
+    <GameFrame v-if="isEnd" @playAgain="playAgain" :limitNum='limitNum'/>
 
     <audio id="sound_correct" hidden="" src="sound/tada.mp3"></audio>
     <audio id="sound_next" hidden="" src="sound/next.mp3"></audio>
@@ -75,6 +75,7 @@
 import Bus from '../middleware/BusEvent';
 import MyProgress from '../components/Progress';
 import OkPic from '../components/OkPic';
+import GameFrame from '../components/GameFrame';
 import {passHanZi, operateCharArray, lowerLetters, upperLetters, numbers, animations, okSounds} from '../configData/allDatas'
 
 const animationRate = .63; // 选对后方块出现动画的概率
@@ -87,8 +88,8 @@ export default {
   },
   data() {
     return {
-      okPicRate: .2, // 选中后图片出现的概率
-      okSoundRate: .5,
+      okPicRate: .33, // 选中后图片出现的概率
+      okSoundRate: .33,
       isChecked: false,
       limitNum: 15,
       showOkPic: false,
@@ -125,7 +126,11 @@ export default {
         this.typeRange = [this.typeRanges_show[0]]
       }
       this.changeTypeRange();
+    },
+    isEnd:function(){
+      document.querySelector('.el-main').style.overflow = 'hidden'
     }
+
   },
   computed: {
     blockNum: function () {
@@ -226,7 +231,8 @@ export default {
     },
     next() {
       if (++this.counter > this.limitNum) {
-        alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
+        // this.openGameFrame()
+        // alert('宝宝，你已经学了' + this.limitNum + '道题了，欣赏一下佩奇家跳泥坑吧！');
         this.isEnd = true;
         return false;
       } else {
@@ -235,6 +241,12 @@ export default {
         this.shuffle();
       }
     },
+   /*  open() {
+        this.$alert('<button type="primary" size="mini" @click="playAgain">佩奇一家跳泥坑</button><br/><button type="primary" size="mini" @click="playAgain">汽车抬杆落杆</button>', 
+        '宝宝，你已经学了' + this.limitNum + '道题了，可以选择一种游戏玩了', {
+            dangerouslyUseHTMLString: true
+        })
+    },  */
     keyDownBlock(e) {
       console.log(e);
     },
@@ -254,16 +266,13 @@ export default {
         }
         this.$sound_correct.play();
         this.timer = setTimeout(this.next, this.blankPic ? 1500 : 2500);
-
       };
       if (index === +this.resultIndex) {
         checkRight();
       }
     },
     getCorrectAnimation() {
-      const temp = Math.random() < animationRate ? animations.rdm() : '';
-      console.log(temp);
-      return temp;
+      return Math.random() < animationRate ? animations.rdm() : '';
     }
   },
   created() {
@@ -286,10 +295,13 @@ export default {
   },
   components: {
     MyProgress,
-    OkPic
+    OkPic,
+    GameFrame
   }
 };
 </script>
+
+
 <style lang="scss">
 
 .el-checkbox-button.is-disabled .el-checkbox-button__inner {
@@ -349,7 +361,7 @@ export default {
   background: var(--c-success);
   pointer-events: none;
   animation-duration: .88s;
-  z-index: 1;
+  // z-index: 1;
 }
 
 .box-wrap > div.error {
