@@ -62,7 +62,7 @@
 
       <p class="">本工具是作者根据自己孩子的成长状态开发的，目前比较适合一岁半到三四岁的宝宝，当然为了让更多孩子能使用到，以后将逐步完善功能，增加大龄幼儿的兴趣点。</p>
       <p class="">如果父母们有好的想法可以加QQ群1056477760，或扫描下方二维码加入微信群一起交流：
-      <p class="qrCode text-center mt-4"><img src="http://e-art.top/Img/QR_weixin.png" alt="微信二维码"></p>
+      <p class="qrCode text-center mt-4"><img :src="'http://e-art.top/Img/QR_weixin.png?refresh='+Math.random()" alt="微信二维码"></p>
     </div>
     <GameFrame v-if="isEnd" @playAgain="playAgain" :limitNum='limitNum'/>
 
