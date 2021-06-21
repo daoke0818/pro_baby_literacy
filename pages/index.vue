@@ -11,7 +11,7 @@
     </el-footer>
     <el-drawer
       title="设置"
-      size="70%"
+      size="16rem"
       :visible.sync="drawer">
       <Settings :typeRanges_show="typeRanges_show"/>
     </el-drawer>

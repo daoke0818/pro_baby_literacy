@@ -1,7 +1,7 @@
 <template>
   <el-form ref="form">
     <el-form-item v-if="!showSettings">
-      <el-input placeholder="请输入:宝宝加油" v-model="password" class="input-with-select">
+      <el-input placeholder="请输入:宝宝加油" v-model="password" class="input-with-select" @keyup.enter.native="checkPassword">
         <el-button slot="append" @click="checkPassword">确定</el-button>
       </el-input>
 <!--      <el-input v-model="password" />-->
@@ -37,7 +37,9 @@ export default {
     checkPassword(){
       if(this.password==='宝宝加油'){
         this.showSettings = true
+        return
       }
+      alert('密码是“宝宝加油”')
     }
   }
 

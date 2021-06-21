@@ -3,8 +3,7 @@
     <el-dialog
       title='恭喜过关！'
       :visible.sync="dialogVisible"
-      width="80%"
-      :before-close="handleClose">
+      width="80%">
       <strong>宝宝，你已经学了{{this.limitNum}}道题了，可以选择一种游戏玩了。直接关闭会重新开始哦~</strong>
       <ul class='gameList'>
         <li><el-button type="primary" size="small" @click='()=>selecteGame("peppaPig")'>佩奇一家跳泥坑</el-button></li>
@@ -63,12 +62,13 @@ import {gameDuration} from '../configData/allDatas'
 
 <style scoped lang="scss">
 .game-frame{
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
     background: black;
+    z-index:2001;
     .gameList{
       padding-top:1rem;
       li{
@@ -98,7 +98,7 @@ import {gameDuration} from '../configData/allDatas'
     }
     .ctrlBar{
           position: absolute;
-          top: 2rem;
+          top: 1rem;
           padding:.5rem;
     }
     
